@@ -1,4 +1,3 @@
-; test2.lisp
 
 (defun add (a b)
   (+ a b))

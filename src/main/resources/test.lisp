@@ -2,6 +2,11 @@
 (defun add (a b)
   (+ a b))
 
+(defun aAdd (a b)
+  (+ (+ a b) a)
+)
+
+
 (defun subtract (a b)
   (- a b))
 

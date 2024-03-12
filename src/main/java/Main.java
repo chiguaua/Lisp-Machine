@@ -27,6 +27,6 @@ public class Main {
         lisp_to_javaParser parser = new lisp_to_javaParser(tokens);
 
         Vision visitor = new Vision(parser);
-        visitor.visit(parser.program());
+        visitor.visit(parser.program(), false);
     }
 }

@@ -1,4 +1,4 @@
-// Generated from H:/CS NSU Class of 2025/CS NSU 06 (Sixth Semester)/06 Software Designing/Projects/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
+// Generated from C:/Global/prog/Lisp/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -16,8 +16,8 @@ public class lisp_to_javaParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		IDENTIFIER=1, PLUS=2, MINUS=3, MULT=4, DIV=5, OP=6, CP=7, STRING=8, NUMBER=9, 
-		WHITESPACE=10, DIGIT=11, LETTER=12, LOWER=13, UPPER=14;
+		IDENTIFIER=1, PLUS=2, MINUS=3, MULT=4, DIV=5, OP=6, CP=7, LOGIC=8, STRING=9, 
+		NUMBER=10, WHITESPACE=11, DIGIT=12, LETTER=13, LOWER=14, UPPER=15;
 	public static final int
 		RULE_program = 0, RULE_expression = 1;
 	private static String[] makeRuleNames() {
@@ -35,8 +35,8 @@ public class lisp_to_javaParser extends Parser {
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "IDENTIFIER", "PLUS", "MINUS", "MULT", "DIV", "OP", "CP", "STRING", 
-			"NUMBER", "WHITESPACE", "DIGIT", "LETTER", "LOWER", "UPPER"
+			null, "IDENTIFIER", "PLUS", "MINUS", "MULT", "DIV", "OP", "CP", "LOGIC", 
+			"STRING", "NUMBER", "WHITESPACE", "DIGIT", "LETTER", "LOWER", "UPPER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -209,7 +209,7 @@ public class lisp_to_javaParser extends Parser {
 			setState(20);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 834L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1602L) != 0)) {
 				{
 				setState(18);
 				_errHandler.sync(this);
@@ -262,7 +262,7 @@ public class lisp_to_javaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u000e\u001a\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
+		"\u0004\u0001\u000f\u001a\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
 		"\u0001\u0000\u0005\u0000\u0006\b\u0000\n\u0000\f\u0000\t\t\u0000\u0001"+
 		"\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
 		"\u0001\u0001\u0001\u0005\u0001\u0013\b\u0001\n\u0001\f\u0001\u0016\t\u0001"+
@@ -273,8 +273,8 @@ public class lisp_to_javaParser extends Parser {
 		"\u0007\b\u0001\u0000\u0000\u0000\b\n\u0001\u0000\u0000\u0000\t\u0007\u0001"+
 		"\u0000\u0000\u0000\n\u000b\u0005\u0000\u0000\u0001\u000b\u0001\u0001\u0000"+
 		"\u0000\u0000\f\r\u0005\u0006\u0000\u0000\r\u0014\u0005\u0001\u0000\u0000"+
-		"\u000e\u0013\u0005\u0001\u0000\u0000\u000f\u0013\u0005\b\u0000\u0000\u0010"+
-		"\u0013\u0005\t\u0000\u0000\u0011\u0013\u0003\u0002\u0001\u0000\u0012\u000e"+
+		"\u000e\u0013\u0005\u0001\u0000\u0000\u000f\u0013\u0005\t\u0000\u0000\u0010"+
+		"\u0013\u0005\n\u0000\u0000\u0011\u0013\u0003\u0002\u0001\u0000\u0012\u000e"+
 		"\u0001\u0000\u0000\u0000\u0012\u000f\u0001\u0000\u0000\u0000\u0012\u0010"+
 		"\u0001\u0000\u0000\u0000\u0012\u0011\u0001\u0000\u0000\u0000\u0013\u0016"+
 		"\u0001\u0000\u0000\u0000\u0014\u0012\u0001\u0000\u0000\u0000\u0014\u0015"+

@@ -16,8 +16,9 @@
 
 (defun factorial (a)
   (if (> a 1)
-  (if () * a (factorial (- a 1)))
-  1)
+  (* a (factorial (- a 1)))
+  1
+  )
 )
 
 (add 5 3)
@@ -25,3 +26,4 @@
 (multiply 2 6)
 (divide 8 2)
 (print "dddqddq")
+

@@ -52,6 +52,18 @@ public class Vision {
                             .append(visit(ctx.getChild(3), false));
                 }
             }
+            case "print" -> {
+                javaLineBuilder
+                        .append("System.out.println")
+                        .append(visitFunBody(ctx))
+                        .append(";\n ");
+            }
+            case "let" -> {
+                javaLineBuilder
+                        .append("System.out.println")
+                        .append(visitFunBody(ctx))
+                        .append(";\n ");
+            }
             case "if" -> {
                 javaLineBuilder
                         .append(visit(ctx.getChild(1), false))

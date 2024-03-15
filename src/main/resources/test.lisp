@@ -16,9 +16,15 @@
 
 (defun factorial (a)
   (if (> a 1)
-  (if () * a (factorial (- a 1)))
+  (* a (factorial (- a 1)))
   1)
 )
+
+
+((lambda (x) (+ x 10)) 5)
+
+
+
 
 (add 5 3)
 (subtract 10 4)

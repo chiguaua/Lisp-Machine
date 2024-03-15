@@ -23,9 +23,6 @@
 
 ((lambda (x) (+ x 10)) 5)
 
-
-
-
 (add 5 3)
 (subtract 10 4)
 (multiply 2 6)

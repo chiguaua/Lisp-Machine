@@ -19,6 +19,21 @@ public class Vision {
     public String visitExpression(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         //System.out.println("Идентификатор: " + ctx.IDENTIFIER(0).getText());
         StringBuilder javaLineBuilder = new StringBuilder();
+        if (ctx.getChild(1) instanceof lisp_to_javaParser.ExpressionContext) {
+            if (needReturn) {
+                javaLineBuilder
+                        .append("return ")
+                        .append(visit(ctx.getChild(1), false))
+                        .append(visitFunBody(ctx))
+                        .append(";\n ");
+            } else {
+                javaLineBuilder
+                        .append(visit(ctx.getChild(1), false))
+                        .append(visitFunBody(ctx));
+            }
+            return javaLineBuilder.toString();
+        }
+
         switch (ctx.IDENTIFIER(0).getText()) {
             case "defun" -> {
                 javaLineBuilder
@@ -74,7 +89,6 @@ public class Vision {
                 break;
             }
 
-
             default -> {
                 if (needReturn) {
                     javaLineBuilder
@@ -102,8 +116,7 @@ public class Vision {
         javaLineBuilder.append("new ");
 
         // Generate parameter list
-        ParseTree parameters = ctx.getChild(3);
-        System.out.println("ddd "+ parameters.toStringTree(parser));
+        ParseTree parameters = ctx.getChild(2);
         if (parameters instanceof lisp_to_javaParser.ExpressionContext) {
             String parameterList = visitArg((lisp_to_javaParser.ExpressionContext) parameters);
             javaLineBuilder.append(parameterList);
@@ -112,7 +125,7 @@ public class Vision {
         }
 
         // Generate lambda body
-        ParseTree body = ctx.getChild(4);
+        ParseTree body = ctx.getChild(3);
         if (body instanceof lisp_to_javaParser.ExpressionContext) {
             javaLineBuilder.append(" -> ");
             javaLineBuilder.append("{");

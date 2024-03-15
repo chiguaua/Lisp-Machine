@@ -27,3 +27,8 @@
 (divide 8 2)
 (print "dddqddq")
 
+( let (( x 10)
+        (y 5))
+     (print x y)
+     )
+

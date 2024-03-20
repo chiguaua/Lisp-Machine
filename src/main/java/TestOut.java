@@ -1,3 +1,5 @@
+import java.util.function.Function;
+
 public class TestOut {public static int add(int a, int b) {
     return a+b;
 }
@@ -20,7 +22,11 @@ public class TestOut {public static int add(int a, int b) {
         } else {
             return 1;
         }}
-    public static void main(String[] args) {add(5, 3);
+    public static void main(String[] args) {
+        Function<Integer, Integer> lambdaFunction0 = (x) -> {return x*x;
+    };
+        lambdaFunction0.apply(5);
+        add(5, 3);
         subtract(10, 4);
         multiply(2, 6);
         divide(8, 2);

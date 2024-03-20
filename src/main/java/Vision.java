@@ -3,19 +3,21 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 // Изначально был план переписать стандартного Vision под нашу задачу, но теперь решил полностью своего.
 // Думаю он будет сильно отличаться
 public class Vision {
 
     Parser parser;
+
+    List<String> mainBody = new ArrayList<>();
 
     Vision(Parser parser) {
         this.parser = parser;
@@ -24,6 +26,25 @@ public class Vision {
     public String visitExpression(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         //System.out.println("Идентификатор: " + ctx.IDENTIFIER(0).getText());
         StringBuilder javaLineBuilder = new StringBuilder();
+        if (ctx.getChild(1) instanceof lisp_to_javaParser.ExpressionContext) {
+            String applyLam = "";
+            if(ctx.getChild(1).getChild(1).toStringTree(parser).contains("lambda")) {
+                applyLam = ".apply";
+            }
+            if (needReturn) {
+                javaLineBuilder
+                        .append("return ")
+                        .append(visit(ctx.getChild(1), false) + applyLam)
+                        .append(visitFunBody(ctx))
+                        .append(";\n ");
+            } else {
+                javaLineBuilder
+                        .append(visit(ctx.getChild(1), false) + applyLam)
+                        .append(visitFunBody(ctx));
+            }
+            return javaLineBuilder.toString();
+        }
+
         switch (ctx.IDENTIFIER(0).getText()) {
             case "defun" -> {
                 javaLineBuilder
@@ -82,6 +103,13 @@ public class Vision {
                 }
                 javaLineBuilder.append("\n}");
             }
+
+            // lambda - creates an anonymous function.
+
+            case "lambda" -> {
+                handleLambda(ctx, javaLineBuilder, needReturn);
+            }
+
             default -> {
                 if (needReturn) {
                     javaLineBuilder
@@ -101,12 +129,65 @@ public class Vision {
         return javaLineBuilder.toString();
     }
 
+    // handeling lambda
+
+    private void handleLambda(lisp_to_javaParser.ExpressionContext ctx, StringBuilder javaLineBuilder, boolean needReturn) {
+
+        String lambdaName = "lambdaFunction" + mainBody.size();
+        StringBuilder javaAdditionalLineBuilder = new StringBuilder();
+        javaAdditionalLineBuilder
+                .append("Function<Integer, Integer> ")
+                .append(lambdaName + " = ");
+
+        // Generate parameter list
+        ParseTree parameters = ctx.getChild(2);
+        if (parameters instanceof lisp_to_javaParser.ExpressionContext) {
+            String parameterList = visitLambdaArg((lisp_to_javaParser.ExpressionContext) parameters);
+            javaAdditionalLineBuilder.append(parameterList);
+        } else {
+            throw new IllegalArgumentException("Lambda expression is missing parameters.");
+        }
+
+        // Generate lambda body
+        ParseTree body = ctx.getChild(3);
+        if (body instanceof lisp_to_javaParser.ExpressionContext) {
+            javaAdditionalLineBuilder
+                    .append(" -> ")
+                    .append("{")
+                    .append(visitExpression((lisp_to_javaParser.ExpressionContext) body, true))
+                    .append("}");
+        } else {
+            throw new IllegalArgumentException("Lambda expression is missing body.");
+        }
+        javaLineBuilder.append(lambdaName);
+        // If a return statement is needed, add it
+        if (needReturn) {
+            javaLineBuilder.insert(0, "return ");
+        }
+        mainBody.add(javaAdditionalLineBuilder.toString());
+    }
+
+    private void handleDefault(lisp_to_javaParser.ExpressionContext ctx, StringBuilder javaLineBuilder, boolean needReturn) {
+        if (needReturn) {
+            javaLineBuilder.append("return ")
+                    .append(ctx.getChild(1).getText())
+                    .append(visitFunBody(ctx))
+                    .append(";\n ");
+        } else {
+            javaLineBuilder.append(ctx.getChild(1).getText())
+                    .append(visitFunBody(ctx));
+        }
+    }
+
+
+
+
+
     public String visit(ParseTree parseTree, boolean needReturn) {
         if (parseTree instanceof lisp_to_javaParser.ProgramContext) {
             lisp_to_javaParser.ProgramContext ctx = (lisp_to_javaParser.ProgramContext) parseTree;
             FileOutputStream outputStream = null;
             File myFile = new File("testOut.txt");
-            List<String> mainBody = new ArrayList<>();
             try {
                 outputStream = new FileOutputStream(myFile);
 
@@ -189,13 +270,40 @@ public class Vision {
 
     //Аргументы функции ~ function arguments
     public String visitArg(lisp_to_javaParser.ExpressionContext ctx) {
-        return "(" +
-                ctx.children.stream().skip(1)
-                        .limit(Math.max(1, ctx.children.size() - 2))
-                        .map(x -> "int " + x.getText())
-                        .reduce((x, y) -> x + ", " + y)
-                        .orElse("")
-                + ")";
+        StringBuilder argBuilder = new StringBuilder("(");
+        for (ParseTree child : ctx.children) {
+            if (child instanceof TerminalNode) {
+                // Skip parentheses
+                if (!child.getText().equals("(") && !child.getText().equals(")")) {
+                    argBuilder.append("int ").append(child.getText()).append(", ");
+                }
+            }
+        }
+        // Remove the trailing comma and space if parameters exist
+        if (argBuilder.length() > 2) {
+            argBuilder.setLength(argBuilder.length() - 2);
+        }
+        argBuilder.append(")");
+        return argBuilder.toString();
+    }
+
+    //Аргументы функции ~ function arguments
+    public String visitLambdaArg(lisp_to_javaParser.ExpressionContext ctx) {
+        StringBuilder argBuilder = new StringBuilder("(");
+        for (ParseTree child : ctx.children) {
+            if (child instanceof TerminalNode) {
+                // Skip parentheses
+                if (!child.getText().equals("(") && !child.getText().equals(")")) {
+                    argBuilder.append(" ").append(child.getText()).append(", ");
+                }
+            }
+        }
+        // Remove the trailing comma and space if parameters exist
+        if (argBuilder.length() > 2) {
+            argBuilder.setLength(argBuilder.length() - 2);
+        }
+        argBuilder.append(")");
+        return argBuilder.toString();
     }
 
 

@@ -21,6 +21,8 @@
   )
 )
 
+((lambda (x) (* x x))  5)
+
 (add 5 3)
 (subtract 10 4)
 (multiply 2 6)

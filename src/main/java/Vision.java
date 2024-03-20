@@ -3,7 +3,9 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +18,7 @@ public class Vision {
     Parser parser;
 
     List<String> mainBody = new ArrayList<>();
+
     Vision(Parser parser) {
         this.parser = parser;
     }
@@ -24,15 +27,19 @@ public class Vision {
         //System.out.println("Идентификатор: " + ctx.IDENTIFIER(0).getText());
         StringBuilder javaLineBuilder = new StringBuilder();
         if (ctx.getChild(1) instanceof lisp_to_javaParser.ExpressionContext) {
+            String applyLam = "";
+            if(ctx.getChild(1).getChild(1).toStringTree(parser).contains("lambda")) {
+                applyLam = ".apply";
+            }
             if (needReturn) {
                 javaLineBuilder
                         .append("return ")
-                        .append(visit(ctx.getChild(1), false))
+                        .append(visit(ctx.getChild(1), false) + applyLam)
                         .append(visitFunBody(ctx))
                         .append(";\n ");
             } else {
                 javaLineBuilder
-                        .append(visit(ctx.getChild(1), false))
+                        .append(visit(ctx.getChild(1), false) + applyLam)
                         .append(visitFunBody(ctx));
             }
             return javaLineBuilder.toString();
@@ -70,6 +77,17 @@ public class Vision {
                             .append(visit(ctx.getChild(1), false))
                             .append(visit(ctx.getChild(3), false));
                 }
+            }
+            case "print" -> {
+                javaLineBuilder
+                        .append("System.out.println")
+                        .append(visitStringConcat(ctx))
+                        .append(";\n ");
+            }
+            case "let" -> {
+                javaLineBuilder
+                        .append(visitLetParam(ctx.getChild(2)))
+                        .append(visit(ctx.getChild(3), needReturn));
             }
             case "if" -> {
                 javaLineBuilder
@@ -117,7 +135,6 @@ public class Vision {
 
         String lambdaName = "lambdaFunction" + mainBody.size();
         StringBuilder javaAdditionalLineBuilder = new StringBuilder();
-        //Function<Integer, Integer> addTen = x -> x + 10;
         javaAdditionalLineBuilder
                 .append("Function<Integer, Integer> ")
                 .append(lambdaName + " = ");
@@ -125,7 +142,7 @@ public class Vision {
         // Generate parameter list
         ParseTree parameters = ctx.getChild(2);
         if (parameters instanceof lisp_to_javaParser.ExpressionContext) {
-            String parameterList = visitArg((lisp_to_javaParser.ExpressionContext) parameters);
+            String parameterList = visitLambdaArg((lisp_to_javaParser.ExpressionContext) parameters);
             javaAdditionalLineBuilder.append(parameterList);
         } else {
             throw new IllegalArgumentException("Lambda expression is missing parameters.");
@@ -147,6 +164,7 @@ public class Vision {
         if (needReturn) {
             javaLineBuilder.insert(0, "return ");
         }
+        mainBody.add(javaAdditionalLineBuilder.toString());
     }
 
     private void handleDefault(lisp_to_javaParser.ExpressionContext ctx, StringBuilder javaLineBuilder, boolean needReturn) {
@@ -168,9 +186,37 @@ public class Vision {
     public String visit(ParseTree parseTree, boolean needReturn) {
         if (parseTree instanceof lisp_to_javaParser.ProgramContext) {
             lisp_to_javaParser.ProgramContext ctx = (lisp_to_javaParser.ProgramContext) parseTree;
-            for (ParseTree exprCtx : ctx.children) {
-                System.out.println(exprCtx.toStringTree(parser) + "============================================================");
-                System.out.println(visit(exprCtx, needReturn));
+            FileOutputStream outputStream = null;
+            File myFile = new File("testOut.txt");
+            try {
+                outputStream = new FileOutputStream(myFile);
+
+                byte[] buffer = "public class TestOut {".getBytes();
+                outputStream.write(buffer);
+                for (ParseTree exprCtx : ctx.children) {
+                    System.out.println(exprCtx.toStringTree(parser) + "============================================================");
+                    String currOut = visit(exprCtx, needReturn);
+                    System.out.println(currOut);
+                    if (currOut.startsWith("public")) {
+                        outputStream.write(currOut.getBytes());
+                        outputStream.write("\n".getBytes());
+                    } else if (!currOut.startsWith("<EOF>")) {
+                        mainBody.add(currOut);
+                    }
+
+                }
+                buffer = " public static void main(String[] args) {".getBytes();
+                outputStream.write(buffer);
+
+                for (String x : mainBody) {
+                    outputStream.write(x.getBytes());
+                    outputStream.write(";\n".getBytes());
+                }
+                buffer = "}\n}".getBytes();
+                outputStream.write(buffer);
+                outputStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         } else if (parseTree instanceof lisp_to_javaParser.ExpressionContext) {
             return visitExpression((lisp_to_javaParser.ExpressionContext) parseTree, needReturn);
@@ -192,7 +238,6 @@ public class Vision {
         for (int i = 2; i < ctx.getChildCount() - 1; i++) {
             ParseTree child = ctx.getChild(i);
             if (child instanceof TerminalNode node) {
-                //System.out.println("Токен: " + node.getText());
                 javaLineBuilder.append(node.getText()).append(", ");
             } else if (child instanceof lisp_to_javaParser.ExpressionContext) {
                 javaLineBuilder.append(visitExpression((lisp_to_javaParser.ExpressionContext) child, false)).append(", ");
@@ -204,6 +249,24 @@ public class Vision {
         javaLineBuilder.append(")");
         return javaLineBuilder.toString();
     }
+    public String visitStringConcat (lisp_to_javaParser.ExpressionContext ctx) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+        javaLineBuilder.append("(");
+        for (int i = 2; i < ctx.getChildCount() - 1; i++) {
+            ParseTree child = ctx.getChild(i);
+            if (child instanceof TerminalNode node) {
+                javaLineBuilder.append(node.getText()).append(" + ");
+            } else if (child instanceof lisp_to_javaParser.ExpressionContext) {
+                javaLineBuilder.append(visitExpression((lisp_to_javaParser.ExpressionContext) child, false)).append(", ");
+            }
+        }
+        if (javaLineBuilder.length() > 2) {
+            javaLineBuilder.delete(javaLineBuilder.length() - 2, javaLineBuilder.length());
+        }
+        javaLineBuilder.append(")");
+        return javaLineBuilder.toString();
+    }
+
 
     //Аргументы функции ~ function arguments
     public String visitArg(lisp_to_javaParser.ExpressionContext ctx) {
@@ -224,4 +287,37 @@ public class Vision {
         return argBuilder.toString();
     }
 
+    //Аргументы функции ~ function arguments
+    public String visitLambdaArg(lisp_to_javaParser.ExpressionContext ctx) {
+        StringBuilder argBuilder = new StringBuilder("(");
+        for (ParseTree child : ctx.children) {
+            if (child instanceof TerminalNode) {
+                // Skip parentheses
+                if (!child.getText().equals("(") && !child.getText().equals(")")) {
+                    argBuilder.append(" ").append(child.getText()).append(", ");
+                }
+            }
+        }
+        // Remove the trailing comma and space if parameters exist
+        if (argBuilder.length() > 2) {
+            argBuilder.setLength(argBuilder.length() - 2);
+        }
+        argBuilder.append(")");
+        return argBuilder.toString();
+    }
+
+
+    public String visitLetParam(ParseTree parseTree) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+        for (int i = 1; i < parseTree.getChildCount() - 1; i++) {
+            ParseTree exprCtx = parseTree.getChild(i);
+            javaLineBuilder
+                    .append("int ")
+                    .append(exprCtx.getChild(1))
+                    .append(" = ")
+                    .append(visit(exprCtx.getChild(2), false))
+                    .append(";\n");
+        }
+        return javaLineBuilder.toString();
+    }
 }

@@ -21,6 +21,11 @@
   )
 )
 
+
+(defun test-list ()
+    (list 1 2 3 4))
+
+
 (add 5 3)
 (subtract 10 4)
 (multiply 2 6)

@@ -292,4 +292,28 @@ public class Vision {
         }
         return javaLineBuilder.toString();
     }
+
+
+
+    private String handleList(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+
+        javaLineBuilder.append("java.util.List<Object> list = new java.util.ArrayList<>();\n");
+
+        for (int i = 1; i < ctx.getChildCount() - 1; i++) {
+            ParseTree child = ctx.getChild(i);
+            if (child instanceof TerminalNode) {
+                TerminalNode node = (TerminalNode) child;
+                javaLineBuilder.append("list.add(").append(node.getText()).append(");\n");
+            } else if (child instanceof lisp_to_javaParser.ExpressionContext) {
+                javaLineBuilder.append("list.add(").append(visitExpression((lisp_to_javaParser.ExpressionContext) child, false)).append(");\n");
+            }
+        }
+
+        if (needReturn) {
+            javaLineBuilder.append("return list;\n");
+        }
+
+        return javaLineBuilder.toString();
+    }
 }

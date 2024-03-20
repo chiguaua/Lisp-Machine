@@ -4,7 +4,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 // Изначально был план переписать стандартного Vision под нашу задачу, но теперь решил полностью своего.
 // Думаю он будет сильно отличаться
@@ -12,6 +15,7 @@ public class Vision {
 
     Parser parser;
 
+    List<String> mainBody = new ArrayList<>();
     Vision(Parser parser) {
         this.parser = parser;
     }
@@ -86,7 +90,6 @@ public class Vision {
 
             case "lambda" -> {
                 handleLambda(ctx, javaLineBuilder, needReturn);
-                break;
             }
 
             default -> {
@@ -112,14 +115,18 @@ public class Vision {
 
     private void handleLambda(lisp_to_javaParser.ExpressionContext ctx, StringBuilder javaLineBuilder, boolean needReturn) {
 
-        System.out.println("Lambda parameters: " + ctx.getChild(1).getText()); // Add this line
-        javaLineBuilder.append("new ");
+        String lambdaName = "lambdaFunction" + mainBody.size();
+        StringBuilder javaAdditionalLineBuilder = new StringBuilder();
+        //Function<Integer, Integer> addTen = x -> x + 10;
+        javaAdditionalLineBuilder
+                .append("Function<Integer, Integer> ")
+                .append(lambdaName + " = ");
 
         // Generate parameter list
         ParseTree parameters = ctx.getChild(2);
         if (parameters instanceof lisp_to_javaParser.ExpressionContext) {
             String parameterList = visitArg((lisp_to_javaParser.ExpressionContext) parameters);
-            javaLineBuilder.append(parameterList);
+            javaAdditionalLineBuilder.append(parameterList);
         } else {
             throw new IllegalArgumentException("Lambda expression is missing parameters.");
         }
@@ -127,14 +134,15 @@ public class Vision {
         // Generate lambda body
         ParseTree body = ctx.getChild(3);
         if (body instanceof lisp_to_javaParser.ExpressionContext) {
-            javaLineBuilder.append(" -> ");
-            javaLineBuilder.append("{");
-            javaLineBuilder.append(visitExpression((lisp_to_javaParser.ExpressionContext) body, true));
-            javaLineBuilder.append("}");
+            javaAdditionalLineBuilder
+                    .append(" -> ")
+                    .append("{")
+                    .append(visitExpression((lisp_to_javaParser.ExpressionContext) body, true))
+                    .append("}");
         } else {
             throw new IllegalArgumentException("Lambda expression is missing body.");
         }
-
+        javaLineBuilder.append(lambdaName);
         // If a return statement is needed, add it
         if (needReturn) {
             javaLineBuilder.insert(0, "return ");

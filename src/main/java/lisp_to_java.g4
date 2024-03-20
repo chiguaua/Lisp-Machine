@@ -7,7 +7,7 @@ grammar lisp_to_java;
  * PARSER RULES
  *------------------------------------------------------------------*/
 program : expression* EOF ;
-expression: OP IDENTIFIER (IDENTIFIER | STRING | NUMBER | expression)* CP;
+expression: OP (IDENTIFIER | expression) (IDENTIFIER | STRING | NUMBER | expression)* CP;
 
 /*------------------------------------------------------------------
  * LEXER RULES

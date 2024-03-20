@@ -23,14 +23,10 @@ return 1;
 public static int testList() {
 return list(1, 2, 3, 4);
  }
-<<<<<<< HEAD
  public static void main(String[] args) {Function<Integer, Integer> lambdaFunction0 = ( x) -> {return x*x;
  };
 lambdaFunction0.apply(5);
 add(5, 3);
-=======
- public static void main(String[] args) {add(5, 3);
->>>>>>> 4437c4719f4f4a1f7cc8b943433706cffd068bb2
 subtract(10, 4);
 multiply(2, 6);
 divide(8, 2);

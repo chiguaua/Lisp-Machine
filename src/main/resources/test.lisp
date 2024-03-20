@@ -22,11 +22,8 @@
 )
 
 
-<<<<<<< HEAD
-(defun testList ()
-=======
+
 (defun testList ( )
->>>>>>> 4437c4719f4f4a1f7cc8b943433706cffd068bb2
     (list 1 2 3 4))
 
 ((lambda (x) (* x x))  5)

@@ -22,9 +22,10 @@
 )
 
 
-(defun test-list ()
+(defun testList ()
     (list 1 2 3 4))
 
+((lambda (x) (* x x))  5)
 
 (add 5 3)
 (subtract 10 4)

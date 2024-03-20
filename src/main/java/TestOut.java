@@ -25,10 +25,8 @@ public class TestOut {public static int add(int a, int b) {
         multiply(2, 6);
         divide(8, 2);
         System.out.println("dddqddq" );
-        ;
         int x = 10;
         int y = 5;
         System.out.println(x + y );
-        ;
     }
 }

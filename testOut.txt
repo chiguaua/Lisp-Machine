@@ -20,3 +20,18 @@ return a*factorial(a-1);
 } else { 
 return 1;
 }}
+public static int testList() {
+return list(1, 2, 3, 4);
+ }
+ public static void main(String[] args) {add(5, 3);
+subtract(10, 4);
+multiply(2, 6);
+divide(8, 2);
+System.out.println("dddqddq" );
+ ;
+int x = 10;
+int y = 5;
+System.out.println(x + y );
+ ;
+}
+}

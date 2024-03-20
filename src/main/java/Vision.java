@@ -4,6 +4,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 // Изначально был план переписать стандартного Vision под нашу задачу, но теперь решил полностью своего.
@@ -98,10 +103,39 @@ public class Vision {
 
     public String visit(ParseTree parseTree, boolean needReturn) {
         if (parseTree instanceof lisp_to_javaParser.ProgramContext) {
-                    lisp_to_javaParser.ProgramContext ctx = (lisp_to_javaParser.ProgramContext) parseTree;
-                    for (ParseTree exprCtx : ctx.children) {
-                        System.out.println(exprCtx.toStringTree(parser) + "============================================================");
-                        System.out.println(visit(exprCtx, needReturn));
+            lisp_to_javaParser.ProgramContext ctx = (lisp_to_javaParser.ProgramContext) parseTree;
+            FileOutputStream outputStream = null;
+            File myFile = new File("testOut.txt");
+            List<String> mainBody = new ArrayList<>();
+            try {
+                outputStream = new FileOutputStream(myFile);
+
+                byte[] buffer = "public class TestOut {".getBytes();
+                outputStream.write(buffer);
+                for (ParseTree exprCtx : ctx.children) {
+                    System.out.println(exprCtx.toStringTree(parser) + "============================================================");
+                    String currOut = visit(exprCtx, needReturn);
+                    System.out.println(currOut);
+                    if (currOut.startsWith("public")) {
+                        outputStream.write(currOut.getBytes());
+                        outputStream.write("\n".getBytes());
+                    } else if (!currOut.startsWith("<EOF>")) {
+                        mainBody.add(currOut);
+                    }
+
+                }
+                buffer = " public static void main(String[] args) {".getBytes();
+                outputStream.write(buffer);
+
+                for (String x : mainBody) {
+                    outputStream.write(x.getBytes());
+                    outputStream.write(";\n".getBytes());
+                }
+                buffer = "}\n}".getBytes();
+                outputStream.write(buffer);
+                outputStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         } else if (parseTree instanceof lisp_to_javaParser.ExpressionContext) {
             return visitExpression((lisp_to_javaParser.ExpressionContext) parseTree, needReturn);

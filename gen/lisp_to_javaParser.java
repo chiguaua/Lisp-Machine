@@ -1,4 +1,4 @@
-// Generated from C:/Global/prog/Lisp/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
+// Generated from F:/CS NSU Class of 2025/CS NSU 06 (Sixth Semester)/06 Software Designing/Projects/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -162,12 +162,6 @@ public class lisp_to_javaParser extends Parser {
 		public TerminalNode IDENTIFIER(int i) {
 			return getToken(lisp_to_javaParser.IDENTIFIER, i);
 		}
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
 		public List<TerminalNode> STRING() { return getTokens(lisp_to_javaParser.STRING); }
 		public TerminalNode STRING(int i) {
 			return getToken(lisp_to_javaParser.STRING, i);
@@ -175,6 +169,12 @@ public class lisp_to_javaParser extends Parser {
 		public List<TerminalNode> NUMBER() { return getTokens(lisp_to_javaParser.NUMBER); }
 		public TerminalNode NUMBER(int i) {
 			return getToken(lisp_to_javaParser.NUMBER, i);
+		}
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
 		}
 		public ExpressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -204,53 +204,35 @@ public class lisp_to_javaParser extends Parser {
 			{
 			setState(12);
 			match(OP);
-			setState(15);
-			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case IDENTIFIER:
-				{
-				setState(13);
-				match(IDENTIFIER);
-				}
-				break;
-			case OP:
-				{
-				setState(14);
-				expression();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-			setState(23);
+			setState(19);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1602L) != 0)) {
 				{
-				setState(21);
+				setState(17);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case IDENTIFIER:
 					{
-					setState(17);
+					setState(13);
 					match(IDENTIFIER);
 					}
 					break;
 				case STRING:
 					{
-					setState(18);
+					setState(14);
 					match(STRING);
 					}
 					break;
 				case NUMBER:
 					{
-					setState(19);
+					setState(15);
 					match(NUMBER);
 					}
 					break;
 				case OP:
 					{
-					setState(20);
+					setState(16);
 					expression();
 					}
 					break;
@@ -258,11 +240,11 @@ public class lisp_to_javaParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(25);
+				setState(21);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(26);
+			setState(22);
 			match(CP);
 			}
 		}
@@ -278,28 +260,25 @@ public class lisp_to_javaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u000f\u001d\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
+		"\u0004\u0001\u000f\u0019\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
 		"\u0001\u0000\u0005\u0000\u0006\b\u0000\n\u0000\f\u0000\t\t\u0000\u0001"+
-		"\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0003\u0001\u0010"+
-		"\b\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0005\u0001\u0016"+
-		"\b\u0001\n\u0001\f\u0001\u0019\t\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
-		"\u0000\u0000\u0002\u0000\u0002\u0000\u0000 \u0000\u0007\u0001\u0000\u0000"+
-		"\u0000\u0002\f\u0001\u0000\u0000\u0000\u0004\u0006\u0003\u0002\u0001\u0000"+
-		"\u0005\u0004\u0001\u0000\u0000\u0000\u0006\t\u0001\u0000\u0000\u0000\u0007"+
-		"\u0005\u0001\u0000\u0000\u0000\u0007\b\u0001\u0000\u0000\u0000\b\n\u0001"+
-		"\u0000\u0000\u0000\t\u0007\u0001\u0000\u0000\u0000\n\u000b\u0005\u0000"+
-		"\u0000\u0001\u000b\u0001\u0001\u0000\u0000\u0000\f\u000f\u0005\u0006\u0000"+
-		"\u0000\r\u0010\u0005\u0001\u0000\u0000\u000e\u0010\u0003\u0002\u0001\u0000"+
-		"\u000f\r\u0001\u0000\u0000\u0000\u000f\u000e\u0001\u0000\u0000\u0000\u0010"+
-		"\u0017\u0001\u0000\u0000\u0000\u0011\u0016\u0005\u0001\u0000\u0000\u0012"+
-		"\u0016\u0005\t\u0000\u0000\u0013\u0016\u0005\n\u0000\u0000\u0014\u0016"+
-		"\u0003\u0002\u0001\u0000\u0015\u0011\u0001\u0000\u0000\u0000\u0015\u0012"+
-		"\u0001\u0000\u0000\u0000\u0015\u0013\u0001\u0000\u0000\u0000\u0015\u0014"+
-		"\u0001\u0000\u0000\u0000\u0016\u0019\u0001\u0000\u0000\u0000\u0017\u0015"+
-		"\u0001\u0000\u0000\u0000\u0017\u0018\u0001\u0000\u0000\u0000\u0018\u001a"+
-		"\u0001\u0000\u0000\u0000\u0019\u0017\u0001\u0000\u0000\u0000\u001a\u001b"+
-		"\u0005\u0007\u0000\u0000\u001b\u0003\u0001\u0000\u0000\u0000\u0004\u0007"+
-		"\u000f\u0015\u0017";
+		"\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
+		"\u0001\u0005\u0001\u0012\b\u0001\n\u0001\f\u0001\u0015\t\u0001\u0001\u0001"+
+		"\u0001\u0001\u0001\u0001\u0000\u0000\u0002\u0000\u0002\u0000\u0000\u001b"+
+		"\u0000\u0007\u0001\u0000\u0000\u0000\u0002\f\u0001\u0000\u0000\u0000\u0004"+
+		"\u0006\u0003\u0002\u0001\u0000\u0005\u0004\u0001\u0000\u0000\u0000\u0006"+
+		"\t\u0001\u0000\u0000\u0000\u0007\u0005\u0001\u0000\u0000\u0000\u0007\b"+
+		"\u0001\u0000\u0000\u0000\b\n\u0001\u0000\u0000\u0000\t\u0007\u0001\u0000"+
+		"\u0000\u0000\n\u000b\u0005\u0000\u0000\u0001\u000b\u0001\u0001\u0000\u0000"+
+		"\u0000\f\u0013\u0005\u0006\u0000\u0000\r\u0012\u0005\u0001\u0000\u0000"+
+		"\u000e\u0012\u0005\t\u0000\u0000\u000f\u0012\u0005\n\u0000\u0000\u0010"+
+		"\u0012\u0003\u0002\u0001\u0000\u0011\r\u0001\u0000\u0000\u0000\u0011\u000e"+
+		"\u0001\u0000\u0000\u0000\u0011\u000f\u0001\u0000\u0000\u0000\u0011\u0010"+
+		"\u0001\u0000\u0000\u0000\u0012\u0015\u0001\u0000\u0000\u0000\u0013\u0011"+
+		"\u0001\u0000\u0000\u0000\u0013\u0014\u0001\u0000\u0000\u0000\u0014\u0016"+
+		"\u0001\u0000\u0000\u0000\u0015\u0013\u0001\u0000\u0000\u0000\u0016\u0017"+
+		"\u0005\u0007\u0000\u0000\u0017\u0003\u0001\u0000\u0000\u0000\u0003\u0007"+
+		"\u0011\u0013";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

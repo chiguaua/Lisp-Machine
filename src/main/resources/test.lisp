@@ -21,6 +21,10 @@
   )
 )
 
+
+
+(print(list 1 2 3 4))
+
 ((lambda (x) (* x x))  5)
 
 (add 5 3)

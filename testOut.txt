@@ -20,9 +20,10 @@ return a*factorial(a-1);
 } else { 
 return 1;
 }}
- public static void main(String[] args) {Function<Integer, Integer> lambdaFunction0 = ( x) -> {return x*x;
+ public static void main(String[] args) {System.out.println(java.util.Arrays.asList(1, 2, 3, 4));
+Function<Integer, Integer> lambdaFunction1 = ( x) -> {return x*x;
  };
-lambdaFunction0.apply(5);
+lambdaFunction1.apply(5);
 add(5, 3);
 subtract(10, 4);
 multiply(2, 6);

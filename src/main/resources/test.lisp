@@ -23,8 +23,7 @@
 
 
 
-(defun testList ( )
-    (list 1 2 3 4))
+(print(list 1 2 3 4))
 
 ((lambda (x) (* x x))  5)
 

@@ -109,6 +109,10 @@ public class Vision {
                 handleLambda(ctx, javaLineBuilder, needReturn);
             }
 
+            case "list" -> {
+                javaLineBuilder.append(handleList(ctx, needReturn));
+            }
+
             default -> {
                 if (needReturn) {
                     javaLineBuilder
@@ -325,17 +329,23 @@ public class Vision {
     private String handleList(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         StringBuilder javaLineBuilder = new StringBuilder();
 
-        javaLineBuilder.append("java.util.List<Object> list = new java.util.ArrayList<>();\n");
+        javaLineBuilder.append("java.util.Arrays.asList(");
 
-        for (int i = 1; i < ctx.getChildCount() - 1; i++) {
+        for (int i = 2; i < ctx.getChildCount() - 1; i++) {
             ParseTree child = ctx.getChild(i);
             if (child instanceof TerminalNode) {
                 TerminalNode node = (TerminalNode) child;
-                javaLineBuilder.append("list.add(").append(node.getText()).append(");\n");
+                javaLineBuilder.append(node.getText()).append(", ");
             } else if (child instanceof lisp_to_javaParser.ExpressionContext) {
-                javaLineBuilder.append("list.add(").append(visitExpression((lisp_to_javaParser.ExpressionContext) child, false)).append(");\n");
+                javaLineBuilder.append(visitExpression((lisp_to_javaParser.ExpressionContext) child, false)).append(", ");
             }
         }
+
+        if (javaLineBuilder.length() > 2) {
+            javaLineBuilder.setLength(javaLineBuilder.length() - 2); // Remove trailing comma
+        }
+
+        javaLineBuilder.append(")");
 
         if (needReturn) {
             javaLineBuilder.append("return list;\n");
@@ -343,4 +353,6 @@ public class Vision {
 
         return javaLineBuilder.toString();
     }
+
+
 }

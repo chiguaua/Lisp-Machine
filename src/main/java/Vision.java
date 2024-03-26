@@ -81,8 +81,7 @@ public class Vision {
             case "print" -> {
                 javaLineBuilder
                         .append("System.out.println")
-                        .append(visitStringConcat(ctx))
-                        .append(";\n ");
+                        .append(visitStringConcat(ctx));
             }
             case "let" -> {
                 javaLineBuilder

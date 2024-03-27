@@ -18,14 +18,36 @@ public class Vision {
     Parser parser;
 
     List<String> mainBody = new ArrayList<>();
+    List<String> macros = new ArrayList<>(); // Add this line to declare the macros list
+
 
     Vision(Parser parser) {
         this.parser = parser;
+        initializeMacros();
     }
+
+
+    // Macros
+    private void initializeMacros() {
+        macros.add("square");
+        macros.add("double");
+    }
+
+
 
     public String visitExpression(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         //System.out.println("Идентификатор: " + ctx.IDENTIFIER(0).getText());
+
         StringBuilder javaLineBuilder = new StringBuilder();
+
+        // checking if the expression is a macro call or not?
+        String identifier = ctx.getChild(0).getText(); // Get the first child text
+        if (macros.contains(identifier)) {
+            return translateMacro(ctx, needReturn);
+        }
+
+
+
         if (ctx.getChild(1) instanceof lisp_to_javaParser.ExpressionContext) {
             String applyLam = "";
             if(ctx.getChild(1).getChild(1).toStringTree(parser).contains("lambda")) {
@@ -103,6 +125,7 @@ public class Vision {
                 javaLineBuilder.append("\n}");
             }
 
+
             case "and" -> {
                 javaLineBuilder
                         .append(visit(ctx.getChild(2), false))
@@ -136,10 +159,6 @@ public class Vision {
             }
 
 
-
-
-            // lambda - creates an anonymous function.
-
             case "lambda" -> {
                 handleLambda(ctx, javaLineBuilder, needReturn);
             }
@@ -167,7 +186,45 @@ public class Vision {
         return javaLineBuilder.toString();
     }
 
-    // handeling lambda
+    // macros
+
+    private String translateMacro(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+        String macroName = ctx.IDENTIFIER(0).getText();
+        javaLineBuilder.append("// Translated macro: ").append(macroName).append("\n");
+
+        switch (macroName) {
+            case "square" -> {
+                // Extract the argument from the macro
+                String argument = visit(ctx.getChild(2), false);
+
+                // Translate square macro
+                javaLineBuilder.append("int squareResult = ").append(argument).append(" * ").append(argument).append(";\n");
+
+                if (needReturn) {
+                    javaLineBuilder.append("return squareResult;\n");
+                }
+                break; // Add break statement
+            }
+            case "double" -> {
+                // Extract the argument from the macro
+                String argument = visit(ctx.getChild(2), false);
+
+                // Translate double macro
+                javaLineBuilder.append("int doubleResult = ").append(argument).append(" + ").append(argument).append(";\n");
+
+                if (needReturn) {
+                    javaLineBuilder.append("return doubleResult;\n");
+                }
+                break; // Add break statement
+            }
+            // Add more cases for other macros
+            default -> throw new IllegalArgumentException("Macro " + macroName + " not found or not supported.");
+        }
+        return javaLineBuilder.toString();
+    }
+
+
 
     private void handleLambda(lisp_to_javaParser.ExpressionContext ctx, StringBuilder javaLineBuilder, boolean needReturn) {
 

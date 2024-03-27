@@ -1,7 +1,4 @@
 grammar lisp_to_java;
-/*------------------------------------------------------------------
- * A very basic implementation of a Lisp grammar.
- *------------------------------------------------------------------*/
 
 /*------------------------------------------------------------------
  * PARSER RULES
@@ -12,7 +9,8 @@ expression: OP (IDENTIFIER | STRING | NUMBER | expression)* CP;
 /*------------------------------------------------------------------
  * LEXER RULES
  *------------------------------------------------------------------*/
-IDENTIFIER : ((LETTER (LETTER | DIGIT)*) | PLUS | MINUS | MULT | DIV | LOGIC ) ;
+IDENTIFIER : ((LETTER | BACKTICK | PLUS | MINUS | MULT | DIV | LOGIC) (LETTER | DIGIT | COMMA)*) ;
+
 
 PLUS : '+';
 MINUS : '-';
@@ -21,6 +19,8 @@ DIV : '/';
 OP : '(';
 CP : ')';
 LOGIC : '>' | '<' | '=' | '/=';
+BACKTICK: '`';
+COMMA: ',';
 
 
 STRING : '"' (LETTER | DIGIT)+ '"';
@@ -35,4 +35,3 @@ LETTER : LOWER | UPPER ;
 
 LOWER : ('a'..'z') ;
 UPPER : ('A'..'Z') ;
-

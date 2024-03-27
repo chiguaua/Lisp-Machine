@@ -45,3 +45,14 @@
 
 (print (rem 10 3))
 (print (mod 10 3))
+
+
+(defmacro square (x)
+  `(* ,x ,x))
+
+(defmacro double (x)
+  `(+ ,x ,x))
+
+
+(print (square 3))
+(print (double 4))

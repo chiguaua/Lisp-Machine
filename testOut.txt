@@ -37,5 +37,9 @@ System.out.println(5<3 || 7>10);
 System.out.println(!=(5, 5));
 System.out.println(rem(10, 3));
 System.out.println(mod(10, 3));
+defmacro(square, x(), x*x);
+defmacro(double, x(), x+x);
+System.out.println(square(3));
+System.out.println(double(4));
 }
 }

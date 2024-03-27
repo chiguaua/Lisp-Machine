@@ -5,7 +5,7 @@ public class TestOut {
         return a + b;
     }
 
-    public static int aAdd(int a, int b) {
+    public static int aAdd(int a , int b) {
         return a + b + a;
     }
 

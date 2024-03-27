@@ -38,3 +38,6 @@
      (print x y)
      )
 
+(print (and (> 5 3) (< 7 10)))
+(print (or (< 5 3) (> 7 10)))
+(print (not (= 5 5)))

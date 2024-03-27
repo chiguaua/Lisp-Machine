@@ -103,6 +103,24 @@ public class Vision {
                 javaLineBuilder.append("\n}");
             }
 
+            case "and" -> {
+                javaLineBuilder
+                        .append(visit(ctx.getChild(2), false))
+                        .append(" && ")
+                        .append(visit(ctx.getChild(3), false));
+            }
+            case "or" -> {
+                javaLineBuilder
+                        .append(visit(ctx.getChild(2), false))
+                        .append(" || ")
+                        .append(visit(ctx.getChild(3), false));
+            }
+            case "not" -> {
+                javaLineBuilder.append("!")
+                        .append(visit(ctx.getChild(2), false));
+            }
+
+
             // lambda - creates an anonymous function.
 
             case "lambda" -> {

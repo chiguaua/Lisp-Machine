@@ -120,6 +120,23 @@ public class Vision {
                         .append(visit(ctx.getChild(2), false));
             }
 
+            case "rem" -> {
+                javaLineBuilder.append("rem(")
+                        .append(visit(ctx.getChild(2), false))
+                        .append(", ")
+                        .append(visit(ctx.getChild(3), false))
+                        .append(")");
+            }
+            case "mod" -> {
+                javaLineBuilder.append("mod(")
+                        .append(visit(ctx.getChild(2), false))
+                        .append(", ")
+                        .append(visit(ctx.getChild(3), false))
+                        .append(")");
+            }
+
+
+
 
             // lambda - creates an anonymous function.
 

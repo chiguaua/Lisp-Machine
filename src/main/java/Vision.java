@@ -1,34 +1,31 @@
 import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
+import java.util.*;
 
-// Изначально был план переписать стандартного Vision под нашу задачу, но теперь решил полностью своего.
-// Думаю он будет сильно отличаться
 public class Vision {
 
     Parser parser;
 
     List<String> mainBody = new ArrayList<>();
 
+    String type = "?";
+
+    HashMap<String, String> nameSpace = new HashMap<>();
+
     Vision(Parser parser) {
         this.parser = parser;
     }
 
     public String visitExpression(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
-        //System.out.println("Идентификатор: " + ctx.IDENTIFIER(0).getText());
         StringBuilder javaLineBuilder = new StringBuilder();
         if (ctx.getChild(1) instanceof lisp_to_javaParser.ExpressionContext) {
             String applyLam = "";
-            if(ctx.getChild(1).getChild(1).toStringTree(parser).contains("lambda")) {
+            if (ctx.getChild(1).getChild(1).toStringTree(parser).contains("lambda")) {
                 applyLam = ".apply";
             }
             if (needReturn) {
@@ -48,9 +45,7 @@ public class Vision {
         switch (ctx.IDENTIFIER(0).getText()) {
             case "defun" -> {
                 javaLineBuilder
-                        .append("public static int ")
-                        .append(ctx.getChild(2).getText())
-                        .append(visitArg((lisp_to_javaParser.ExpressionContext) ctx.getChild(3)))
+                        .append(visitArg(ctx))
                         .append(" {\n");
                 for (int i = 4; i < ctx.getChildCount() - 1; i++) {
                     ParseTree child = ctx.getChild(i);
@@ -63,7 +58,37 @@ public class Vision {
                 }
                 javaLineBuilder.append("}");
             }
-            case "+", "-", "*", "/", ">", "<", "==" -> {
+            case "+" -> {
+                List<String> checkList = Arrays.asList("Integer", "Float", "Double", "String");
+                for (String x : checkList) {
+                    javaLineBuilder.append(" if (")
+                            .append(visit(ctx.getChild(2), false))
+                            .append(" instanceof " + x + " && ")
+                            .append(visit(ctx.getChild(3), false))
+                            .append(" instanceof " + x + ") {\n");
+                    if (needReturn) {
+                        javaLineBuilder
+                                .append("return ")
+                                .append(" (" + x + ") ")
+                                .append(visit(ctx.getChild(2), false))
+                                .append(visit(ctx.getChild(1), false))
+                                .append(" (" + x + ") ")
+                                .append(visit(ctx.getChild(3), false))
+                                .append(";\n ");
+                    } else {
+                        javaLineBuilder
+                                .append(" (" + x + ") ")
+                                .append(visit(ctx.getChild(2), false))
+                                .append(visit(ctx.getChild(1), false))
+                                .append(" (" + x + ") ")
+                                .append(visit(ctx.getChild(3), false));
+                    }
+                    javaLineBuilder.append("\n}");
+                }
+                javaLineBuilder.append("throw new ClassCastException(\"Ошибка при попытке применения функции к типу.\");");
+
+            }
+            case "-", "*", "/", ">", "<", "==" -> {
                 if (needReturn) {
                     javaLineBuilder
                             .append("return ")
@@ -102,9 +127,6 @@ public class Vision {
                 }
                 javaLineBuilder.append("\n}");
             }
-
-            // lambda - creates an anonymous function.
-
             case "lambda" -> {
                 handleLambda(ctx, javaLineBuilder, needReturn);
             }
@@ -179,9 +201,6 @@ public class Vision {
     }
 
 
-
-
-
     public String visit(ParseTree parseTree, boolean needReturn) {
         if (parseTree instanceof lisp_to_javaParser.ProgramContext) {
             lisp_to_javaParser.ProgramContext ctx = (lisp_to_javaParser.ProgramContext) parseTree;
@@ -248,7 +267,8 @@ public class Vision {
         javaLineBuilder.append(")");
         return javaLineBuilder.toString();
     }
-    public String visitStringConcat (lisp_to_javaParser.ExpressionContext ctx) {
+
+    public String visitStringConcat(lisp_to_javaParser.ExpressionContext ctx) {
         StringBuilder javaLineBuilder = new StringBuilder();
         javaLineBuilder.append("(");
         for (int i = 2; i < ctx.getChildCount() - 1; i++) {
@@ -266,15 +286,34 @@ public class Vision {
         return javaLineBuilder.toString();
     }
 
-
-    //Аргументы функции ~ function arguments
     public String visitArg(lisp_to_javaParser.ExpressionContext ctx) {
-        StringBuilder argBuilder = new StringBuilder("(");
-        for (ParseTree child : ctx.children) {
+
+        lisp_to_javaParser.ExpressionContext args = (lisp_to_javaParser.ExpressionContext) ctx.getChild(3);
+        HashMap<String, String> childName = new HashMap<>();
+        for (ParseTree child : args.children) {
             if (child instanceof TerminalNode) {
-                // Skip parentheses
                 if (!child.getText().equals("(") && !child.getText().equals(")")) {
-                    argBuilder.append("int ").append(child.getText()).append(", ");
+                    childName.put(child.getText(), "");
+                }
+            }
+        }
+        checkTypeBase(childName, ctx, "");
+        System.out.println(childName);
+
+        StringBuilder argBuilder = new StringBuilder();
+
+        argBuilder
+                .append("public static Object ");
+
+        argBuilder.append(ctx.getChild(2).getText() + "(");
+        for (ParseTree child : args.children) {
+            if (child instanceof TerminalNode) {
+                if (!child.getText().equals("(") && !child.getText().equals(")")) {
+                    String localType = childName.get(child.getText());
+                    if (localType.trim().isEmpty()) {
+                        localType = type;
+                    }
+                    argBuilder.append("Object ").append(child.getText()).append(", ");
                 }
             }
         }
@@ -311,12 +350,62 @@ public class Vision {
         for (int i = 1; i < parseTree.getChildCount() - 1; i++) {
             ParseTree exprCtx = parseTree.getChild(i);
             javaLineBuilder
-                    .append("int ")
+                    .append(type + " ")
                     .append(exprCtx.getChild(1))
                     .append(" = ")
                     .append(visit(exprCtx.getChild(2), false))
                     .append(";\n");
         }
         return javaLineBuilder.toString();
+    }
+
+    public void checkTypeBase(HashMap<String, String> argName, lisp_to_javaParser.ExpressionContext ctx, String expected) {
+        for (int i = 4; i < ctx.getChildCount() - 1; i++) {
+            ParseTree child = ctx.getChild(i);
+            if (child instanceof lisp_to_javaParser.ExpressionContext) {
+                checkType(argName, (lisp_to_javaParser.ExpressionContext) child, "");
+            }
+        }
+    }
+
+    public void checkType(HashMap<String, String> argName, ParseTree ctx, String expected) {
+        if (ctx instanceof TerminalNode) {
+            TerminalNode node = (TerminalNode) ctx;
+            if (argName.containsKey(node.getText())) {
+                argName.put(node.getText(), argName.get(node.getText()) + " " + expected);
+            } else {
+                argName.put(node.getText(), expected);
+            }
+        } else if (ctx instanceof lisp_to_javaParser.ExpressionContext) {
+            switch (((lisp_to_javaParser.ExpressionContext) ctx).IDENTIFIER(0).getText()) {
+                case "+", "-", "*", "/", ">", "<", "==" -> {
+                    for (int i = 2; i < ctx.getChildCount() - 1; i++) {
+                        ParseTree child = ctx.getChild(i);
+                        checkType(argName, child, "double");
+                    }
+                }
+                case "print" -> {
+                }
+                case "let" -> {
+                }
+                case "if" -> {
+                    checkType(argName, ctx.getChild(2), "boolean");
+                    checkType(argName, ctx.getChild(3), "");
+
+                    //else branch
+                    if (!Objects.equals(ctx.getChild(4).toStringTree(parser), ")")) {
+                        checkType(argName, ctx.getChild(4), "");
+                    }
+                }
+                case "lambda" -> {
+
+                }
+
+                default -> {
+                    checkType(argName, ctx.getChild(3), "");
+                }
+            }
+        }
+
     }
 }

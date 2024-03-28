@@ -1,4 +1,4 @@
-// Generated from F:/CS NSU Class of 2025/CS NSU 06 (Sixth Semester)/06 Software Designing/Projects/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
+
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -108,6 +108,7 @@ public class lisp_to_javaLexer extends Lexer {
 	public ATN getATN() { return _ATN; }
 
 	public static final String _serializedATN =
+
 		"\u0004\u0000\u0011f\u0006\uffff\uffff\u0002\u0000\u0007\u0000\u0002\u0001"+
 		"\u0007\u0001\u0002\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004"+
 		"\u0007\u0004\u0002\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007"+
@@ -171,6 +172,7 @@ public class lisp_to_javaLexer extends Lexer {
 		"\u0000`_\u0001\u0000\u0000\u0000a\u001e\u0001\u0000\u0000\u0000bc\u0002"+
 		"az\u0000c \u0001\u0000\u0000\u0000de\u0002AZ\u0000e\"\u0001\u0000\u0000"+
 		"\u0000\n\u0000&(0AJLSX`\u0001\u0000\u0001\u0000";
+
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

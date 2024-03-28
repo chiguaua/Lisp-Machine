@@ -9,7 +9,8 @@ expression: OP (IDENTIFIER | STRING | NUMBER | expression)* CP;
 /*------------------------------------------------------------------
  * LEXER RULES
  *------------------------------------------------------------------*/
-IDENTIFIER : ((LETTER (LETTER | DIGIT)*) | PLUS | MINUS | MULT | DIV | LOGIC ) ;
+
+IDENTIFIER : ((LETTER (LETTER | DIGIT)*) | PLUS | MINUS | MULT | DIV | LOGIC | BACKTICK | COMMA) ;
 
 PLUS : '+';
 MINUS : '-';

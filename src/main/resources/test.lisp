@@ -14,7 +14,12 @@
 (defun divide (a b)
   (/ a b))
 
-
+(defun factorial (a)
+  (if (> a 1)
+  (* a (factorial (- a 1)))
+  1
+  )
+)
 
 ((lambda (x) (* x x))  5)
 
@@ -28,4 +33,6 @@
         (y 5))
      (print (add x y))
      )
+
+(print (factorial 5))
 

@@ -13,6 +13,13 @@ return (((Number) a).doubleValue()*((Number) b).doubleValue());
 public static Object divide(Object a, Object b) {
 return (((Number) a).doubleValue()/((Number) b).doubleValue());
  }
+public static Object factorial(Object a) {
+if ((((Number) a).doubleValue()>((Number) 1).doubleValue())) { 
+return (((Number) a).doubleValue()*((Number) factorial((((Number) a).doubleValue()-((Number) 1).doubleValue()))).doubleValue());
+ 
+} else { 
+return 1;
+}}
  public static void main(String[] args) {Function<Object, Object> lambdaFunction0 = ( x) -> {return (((Number) x).doubleValue()*((Number) x).doubleValue());
  };
 lambdaFunction0.apply(5);
@@ -24,5 +31,6 @@ System.out.println("dddqddq" );
 Object x = 10;
 Object y = 5;
 System.out.println(add(x, y));
+System.out.println(factorial(5));
 }
 }

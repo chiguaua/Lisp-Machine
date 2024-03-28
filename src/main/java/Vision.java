@@ -13,7 +13,7 @@ public class Vision {
 
     List<String> mainBody = new ArrayList<>();
 
-    String type = "?";
+    String type = "Object";
 
     HashMap<String, String> nameSpace = new HashMap<>();
 
@@ -58,49 +58,49 @@ public class Vision {
                 }
                 javaLineBuilder.append("}");
             }
-            case "+" -> {
-                List<String> checkList = Arrays.asList("Integer", "Float", "Double", "String");
-                for (String x : checkList) {
-                    javaLineBuilder.append(" if (")
-                            .append(visit(ctx.getChild(2), false))
-                            .append(" instanceof " + x + " && ")
-                            .append(visit(ctx.getChild(3), false))
-                            .append(" instanceof " + x + ") {\n");
-                    if (needReturn) {
-                        javaLineBuilder
-                                .append("return ")
-                                .append(" (" + x + ") ")
-                                .append(visit(ctx.getChild(2), false))
-                                .append(visit(ctx.getChild(1), false))
-                                .append(" (" + x + ") ")
-                                .append(visit(ctx.getChild(3), false))
-                                .append(";\n ");
-                    } else {
-                        javaLineBuilder
-                                .append(" (" + x + ") ")
-                                .append(visit(ctx.getChild(2), false))
-                                .append(visit(ctx.getChild(1), false))
-                                .append(" (" + x + ") ")
-                                .append(visit(ctx.getChild(3), false));
-                    }
-                    javaLineBuilder.append("\n}");
-                }
-                javaLineBuilder.append("throw new ClassCastException(\"Ошибка при попытке применения функции к типу.\");");
-
-            }
-            case "-", "*", "/", ">", "<", "==" -> {
+//            case "+" -> {
+//                List<String> checkList = Arrays.asList("Integer", "Float", "Double", "String");
+//                for (String x : checkList) {
+//                    javaLineBuilder.append(" if (")
+//                            .append(visit(ctx.getChild(2), false))
+//                            .append(" instanceof " + x + " && ")
+//                            .append(visit(ctx.getChild(3), false))
+//                            .append(" instanceof " + x + ") {\n");
+//                    if (needReturn) {
+//                        javaLineBuilder
+//                                .append("return ")
+//                                .append(" (" + x + ") ")
+//                                .append(visit(ctx.getChild(2), false))
+//                                .append(visit(ctx.getChild(1), false))
+//                                .append(" (" + x + ") ")
+//                                .append(visit(ctx.getChild(3), false))
+//                                .append(";\n ");
+//                    } else {
+//                        javaLineBuilder
+//                                .append(" (" + x + ") ")
+//                                .append(visit(ctx.getChild(2), false))
+//                                .append(visit(ctx.getChild(1), false))
+//                                .append(" (" + x + ") ")
+//                                .append(visit(ctx.getChild(3), false));
+//                    }
+//                    javaLineBuilder.append("\n}");
+//                }
+//                javaLineBuilder.append("throw new ClassCastException(\"Ошибка при попытке применения функции к типу.\");");
+//
+//            }
+            case "+", "-", "*", "/", ">", "<", "==" -> {
                 if (needReturn) {
                     javaLineBuilder
-                            .append("return ")
-                            .append(visit(ctx.getChild(2), false))
+                            .append("return (")
+                            .append("((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()")
                             .append(visit(ctx.getChild(1), false))
-                            .append(visit(ctx.getChild(3), false))
-                            .append(";\n ");
+                            .append("((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()")
+                            .append(");\n ");
                 } else {
                     javaLineBuilder
-                            .append(visit(ctx.getChild(2), false))
+                            .append("(((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()")
                             .append(visit(ctx.getChild(1), false))
-                            .append(visit(ctx.getChild(3), false));
+                            .append("((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()" + ")");
                 }
             }
             case "print" -> {
@@ -157,7 +157,7 @@ public class Vision {
         String lambdaName = "lambdaFunction" + mainBody.size();
         StringBuilder javaAdditionalLineBuilder = new StringBuilder();
         javaAdditionalLineBuilder
-                .append("Function<Integer, Integer> ")
+                .append("Function<" + type + ", " + type + "> ")
                 .append(lambdaName + " = ");
 
         // Generate parameter list
@@ -209,7 +209,7 @@ public class Vision {
             try {
                 outputStream = new FileOutputStream(myFile);
 
-                byte[] buffer = "public class TestOut {".getBytes();
+                byte[] buffer = "public class TestOut {" .getBytes();
                 outputStream.write(buffer);
                 for (ParseTree exprCtx : ctx.children) {
                     System.out.println(exprCtx.toStringTree(parser) + "============================================================");
@@ -217,20 +217,20 @@ public class Vision {
                     System.out.println(currOut);
                     if (currOut.startsWith("public")) {
                         outputStream.write(currOut.getBytes());
-                        outputStream.write("\n".getBytes());
+                        outputStream.write("\n" .getBytes());
                     } else if (!currOut.startsWith("<EOF>")) {
                         mainBody.add(currOut);
                     }
 
                 }
-                buffer = " public static void main(String[] args) {".getBytes();
+                buffer = " public static void main(String[] args) {" .getBytes();
                 outputStream.write(buffer);
 
                 for (String x : mainBody) {
                     outputStream.write(x.getBytes());
-                    outputStream.write(";\n".getBytes());
+                    outputStream.write(";\n" .getBytes());
                 }
-                buffer = "}\n}".getBytes();
+                buffer = "}\n}" .getBytes();
                 outputStream.write(buffer);
                 outputStream.close();
             } catch (IOException e) {
@@ -303,7 +303,7 @@ public class Vision {
         StringBuilder argBuilder = new StringBuilder();
 
         argBuilder
-                .append("public static Object ");
+                .append("public static " + type + " ");
 
         argBuilder.append(ctx.getChild(2).getText() + "(");
         for (ParseTree child : args.children) {
@@ -313,7 +313,7 @@ public class Vision {
                     if (localType.trim().isEmpty()) {
                         localType = type;
                     }
-                    argBuilder.append("Object ").append(child.getText()).append(", ");
+                    argBuilder.append(type + " ").append(child.getText()).append(", ");
                 }
             }
         }

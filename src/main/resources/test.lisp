@@ -18,7 +18,7 @@
 
 ((lambda (x) (* x x))  5)
 
-(add 5 3)
+(add 3 1)
 (subtract 10 4)
 (multiply 2 6)
 (divide 8 2)
@@ -26,6 +26,6 @@
 
 ( let (( x 10)
         (y 5))
-     (print x y)
+     (print (add x y))
      )
 

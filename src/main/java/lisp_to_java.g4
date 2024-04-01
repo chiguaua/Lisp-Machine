@@ -10,7 +10,7 @@ expression: OP (IDENTIFIER | STRING | NUMBER | expression)* CP;
  * LEXER RULES
  *------------------------------------------------------------------*/
 
-IDENTIFIER : ((LETTER (LETTER | DIGIT)*) | PLUS | MINUS | MULT | DIV | LOGIC | BACKTICK | COMMA) ;
+IDENTIFIER : ((LETTER (LETTER | DIGIT)*) | PLUS | MINUS | MULT | DIV | LOGIC) ;
 
 PLUS : '+';
 MINUS : '-';
@@ -19,9 +19,6 @@ DIV : '/';
 OP : '(';
 CP : ')';
 LOGIC : '>' | '<' | '=' | '/=';
-BACKTICK: '`';
-COMMA: ',';
-
 
 STRING : '"' (LETTER | DIGIT)+ '"';
 

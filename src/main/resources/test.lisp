@@ -1,5 +1,8 @@
 
 
+(setq a 1
+      b 2)
+
 (let (( x 4))
 (cond
 ((= x 1) (print "1"))

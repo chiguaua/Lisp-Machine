@@ -30,7 +30,9 @@ public class Vision {
 
 
     public String visitExpression(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        //System.out.println("Идентификатор: " + ctx.IDENTIFIER(0).getText());
         StringBuilder javaLineBuilder = new StringBuilder();
+
         if (ctx.getChild(1) instanceof lisp_to_javaParser.ExpressionContext) {
             String applyLam = "";
             if (ctx.getChild(1).getChild(1).toStringTree(parser).contains("lambda")) {
@@ -66,6 +68,8 @@ public class Vision {
                 }
                 javaLineBuilder.append("}");
             }
+
+
 //            case "+" -> {
 //                List<String> checkList = Arrays.asList("Integer", "Float", "Double", "String");
 //                for (String x : checkList) {
@@ -130,6 +134,15 @@ public class Vision {
                         .append("System.out.println")
                         .append(visitStringConcat(ctx));
             }
+
+
+            // user input
+
+            case "read" -> {
+                javaLineBuilder.append("scanner.nextInt()");
+            }
+
+
             case "let" -> {
                 javaLineBuilder
                         .append(visitLetParam(ctx.getChild(2)))
@@ -149,6 +162,7 @@ public class Vision {
                 }
                 javaLineBuilder.append("\n}");
             }
+
 
             case "and" -> {
                 javaLineBuilder
@@ -201,8 +215,6 @@ public class Vision {
         }
         return javaLineBuilder.toString();
     }
-
-    // handeling lambda
 
     private void handleLambda(lisp_to_javaParser.ExpressionContext ctx, StringBuilder javaLineBuilder, boolean needReturn) {
 
@@ -261,7 +273,7 @@ public class Vision {
             try {
                 outputStream = new FileOutputStream(myFile);
 
-                byte[] buffer = "public class TestOut {" .getBytes();
+                byte[] buffer = "public class TestOut {".getBytes();
                 outputStream.write(buffer);
                 for (ParseTree exprCtx : ctx.children) {
                     System.out.println(exprCtx.toStringTree(parser) + "============================================================");
@@ -269,20 +281,20 @@ public class Vision {
                     System.out.println(currOut);
                     if (currOut.startsWith("public")) {
                         outputStream.write(currOut.getBytes());
-                        outputStream.write("\n" .getBytes());
+                        outputStream.write("\n".getBytes());
                     } else if (!currOut.startsWith("<EOF>")) {
                         mainBody.add(currOut);
                     }
 
                 }
-                buffer = " public static void main(String[] args) {" .getBytes();
+                buffer = " public static void main(String[] args) {\nScanner scanner = new Scanner(System.in);\n".getBytes();
                 outputStream.write(buffer);
 
                 for (String x : mainBody) {
                     outputStream.write(x.getBytes());
-                    outputStream.write(";\n" .getBytes());
+                    outputStream.write(";\n".getBytes());
                 }
-                buffer = "}\n}" .getBytes();
+                buffer = "scanner.close();\n}\n}".getBytes();
                 outputStream.write(buffer);
                 outputStream.close();
             } catch (IOException e) {

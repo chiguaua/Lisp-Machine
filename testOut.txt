@@ -1,5 +1,5 @@
-public class TestOut {public Object a = 1;
-public Object b = 2;
+public class TestOut {public static Object a = 1;
+public static Object b = 2;
 
  public static void main(String[] args) {
 Scanner scanner = new Scanner(System.in);

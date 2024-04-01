@@ -277,10 +277,16 @@ public class Vision {
             return visitExpression((lisp_to_javaParser.ExpressionContext) parseTree, needReturn);
         } else {
             //Полагаю тут может быть константа/переменная. ~ const/var
+            String opepator = "";
+            switch (parseTree.toStringTree(parser)) {
+                case "T" -> opepator = "true";
+                case  "NIL" -> opepator = "false";
+                default -> opepator = parseTree.toStringTree(parser);
+            }
             if (needReturn) {
-                return "return " + parseTree.toStringTree(parser) + ";";
+                return "return " + opepator + ";";
             } else {
-                return parseTree.toStringTree(parser);
+                return opepator;
             }
         }
         return null;

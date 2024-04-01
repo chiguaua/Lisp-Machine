@@ -12,9 +12,11 @@
 )
 )
 
-(do ((i 0 (+ i 1))
-     (j 10 (- j 2)))
-    ((>= i 5) 'done)
-  (print (list i j))
-    (print (list j i)))
+(let ((input (read)))  (print input))
 
+(@call-java System.out.println("CALL JAVA FROM LISP"))
+
+(loop for i from 1 to 5
+      do (print i)
+        (print (+ 1 i))
+      )

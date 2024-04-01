@@ -197,6 +197,27 @@ public class Vision {
                 System.out.println("sss");
             }
 
+            // cond expression
+
+            case "cond"->{
+                // Generate code for each condition and its corresponding branch
+                javaLineBuilder.append("if (");
+                for (int i = 1; i < ctx.getChildCount() - 1; i += 2) {
+                    ParseTree condition = ctx.getChild(i);
+                    ParseTree branch = ctx.getChild(i + 1);
+                    javaLineBuilder.append(visit(condition, false)).append(") {\n");
+                    javaLineBuilder.append(visit(branch, needReturn)).append("\n");
+                    if (i < ctx.getChildCount() - 2) {
+                        javaLineBuilder.append("} else if (");
+                    } else {
+                        javaLineBuilder.append("} else {\n");
+                    }
+                }
+                // Add a default case if none of the conditions match
+                javaLineBuilder.append("throw new IllegalArgumentException(\"No branch of cond matched\");\n");
+                javaLineBuilder.append("}");
+            }
+
             default -> {
                 if (needReturn) {
                     javaLineBuilder
@@ -301,23 +322,49 @@ public class Vision {
                 throw new RuntimeException(e);
             }
         } else if (parseTree instanceof lisp_to_javaParser.ExpressionContext) {
-            return visitExpression((lisp_to_javaParser.ExpressionContext) parseTree, needReturn);
+            lisp_to_javaParser.ExpressionContext expressionContext = (lisp_to_javaParser.ExpressionContext) parseTree;
+            String identifier = expressionContext.IDENTIFIER(0).getText();
+            switch (identifier) {
+                case "cond" -> {
+                    // Only visit the children of cond when building the code
+                    StringBuilder javaLineBuilder = new StringBuilder();
+                    for (int i = 1; i < expressionContext.getChildCount() - 1; i += 2) {
+                        ParseTree condition = expressionContext.getChild(i);
+                        ParseTree branch = expressionContext.getChild(i + 1);
+                        javaLineBuilder.append(visit(condition, false)).append(") {\n");
+                        javaLineBuilder.append(visit(branch, needReturn)).append("\n");
+                        if (i < expressionContext.getChildCount() - 2) {
+                            javaLineBuilder.append("} else if (");
+                        } else {
+                            javaLineBuilder.append("} else {\n");
+                        }
+                    }
+                    // Add a default case if none of the conditions match
+                    javaLineBuilder.append("throw new IllegalArgumentException(\"No branch of cond matched\");\n");
+                    javaLineBuilder.append("}");
+                    return javaLineBuilder.toString();
+                }
+                default -> {
+                    return visitExpression((lisp_to_javaParser.ExpressionContext) parseTree, needReturn);
+                }
+            }
         } else {
-            //Полагаю тут может быть константа/переменная. ~ const/var
-            String opepator = "";
+            // Handle other cases
+            String operator = "";
             switch (parseTree.toStringTree(parser)) {
-                case "T" -> opepator = "true";
-                case  "NIL" -> opepator = "false";
-                default -> opepator = parseTree.toStringTree(parser);
+                case "T" -> operator = "true";
+                case "NIL" -> operator = "false";
+                default -> operator = parseTree.toStringTree(parser);
             }
             if (needReturn) {
-                return "return " + opepator + ";";
+                return "return " + operator + ";";
             } else {
-                return opepator;
+                return operator;
             }
         }
         return null;
     }
+
 
 
     public String visitFunBody(lisp_to_javaParser.ExpressionContext ctx) {

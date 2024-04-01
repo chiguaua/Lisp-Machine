@@ -1,4 +1,7 @@
-public class TestOut { public static void main(String[] args) {
+public class TestOut {public Object a = 1;
+public Object b = 2;
+
+ public static void main(String[] args) {
 Scanner scanner = new Scanner(System.in);
 Object x = 4;
 if ((((Number) x).doubleValue()== ((Number) 1).doubleValue())) {System.out.println("1" );
@@ -8,9 +11,6 @@ if ((((Number) x).doubleValue()== ((Number) 1).doubleValue())) {System.out.print
 } else {
 throw new IllegalArgumentException("No branch of cond matched");
 };
-Object input = scanner.nextInt();
-System.out.println(input );
-System.out.println("CALL JAVA FROM LISP");
 Object i = 0;
 Object j = 10;
 while (!(((Number) i).doubleValue()>= ((Number) 5).doubleValue())) {

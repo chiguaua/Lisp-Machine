@@ -1,37 +1,21 @@
 import java.util.Scanner;
 
-public class TestOut {public static Object add(Object a, Object b) {
-    return (((Number) a).doubleValue()+((Number) b).doubleValue());
-}
-    public static Object aAdd(Object a, Object b) {
-        return (((Number) (((Number) a).doubleValue()+((Number) b).doubleValue())).doubleValue()+((Number) a).doubleValue());
-    }
-    public static Object subtract(Object a, Object b) {
-        return (((Number) a).doubleValue()-((Number) b).doubleValue());
-    }
-    public static Object multiply(Object a, Object b) {
-        return (((Number) a).doubleValue()*((Number) b).doubleValue());
-    }
-    public static Object divide(Object a, Object b) {
-        return (((Number) a).doubleValue()/((Number) b).doubleValue());
-    }
-    public static Object factorial(Object a) {
-        if ((((Number) a).doubleValue()>((Number) 1).doubleValue())) {
-            return (((Number) a).doubleValue()*((Number) factorial((((Number) a).doubleValue()-((Number) 1).doubleValue()))).doubleValue());
-
-        } else {
-            return 1;
-        }}
+public class TestOut {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
-
-        Object input = scanner.nextInt();
-        System.out.println(input );
-
-
-
-
+        Object x = 2;
+        if ((((Number) x).doubleValue() == ((Number) 1).doubleValue())) {
+            System.out.println("1");
+        } else if ((((Number) x).doubleValue() == ((Number) 2).doubleValue())) {
+            System.out.println("2");
+        } else if ((((Number) x).doubleValue() == ((Number) 3).doubleValue())) {
+            System.out.println("3");
+        } else if (true) {
+            System.out.println("S");
+        } else {
+            throw new IllegalArgumentException("No branch of cond matched");
+        }
+        ;
         scanner.close();
     }
 }

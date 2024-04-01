@@ -88,19 +88,33 @@ public class Vision {
 //                javaLineBuilder.append("throw new ClassCastException(\"Ошибка при попытке применения функции к типу.\");");
 //
 //            }
-            case "+", "-", "*", "/", ">", "<", "==" -> {
+            case "+", "-", "*", "/", ">", "<", "=", "rem", "mod" -> {
+                String operator = "";
+                switch (ctx.IDENTIFIER(0).getText()) {
+                    case "+", "-", "*", "/", ">", "<" -> {
+                        operator = ctx.IDENTIFIER(0).getText();
+                    }
+                    case "=" -> {
+                        operator = "==";
+                    }
+                    case "rem", "mod" -> {
+                        operator = "%";
+                    }
+                    default -> operator = "Programming Error";
+                }
+
                 if (needReturn) {
                     javaLineBuilder
                             .append("return (")
-                            .append("((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()")
-                            .append(visit(ctx.getChild(1), false))
-                            .append("((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()")
+                            .append("((Number) " + visit(ctx.getChild(2), false) + ").doubleValue() ")
+                            .append(operator)
+                            .append(" ((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()")
                             .append(");\n ");
                 } else {
                     javaLineBuilder
-                            .append("(((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()")
-                            .append(visit(ctx.getChild(1), false))
-                            .append("((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()" + ")");
+                            .append("(((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()" )
+                            .append(operator)
+                            .append(" ((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()" + ")");
                 }
             }
             case "print" -> {
@@ -144,24 +158,6 @@ public class Vision {
                 javaLineBuilder.append("!")
                         .append(visit(ctx.getChild(2), false));
             }
-
-            case "rem" -> {
-                javaLineBuilder.append("rem(")
-                        .append(visit(ctx.getChild(2), false))
-                        .append(", ")
-                        .append(visit(ctx.getChild(3), false))
-                        .append(")");
-            }
-            case "mod" -> {
-                javaLineBuilder.append("mod(")
-                        .append(visit(ctx.getChild(2), false))
-                        .append(", ")
-                        .append(visit(ctx.getChild(3), false))
-                        .append(")");
-            }
-
-
-
 
             // lambda - creates an anonymous function.
             case "lambda" -> {
@@ -281,10 +277,16 @@ public class Vision {
             return visitExpression((lisp_to_javaParser.ExpressionContext) parseTree, needReturn);
         } else {
             //Полагаю тут может быть константа/переменная. ~ const/var
+            String opepator = "";
+            switch (parseTree.toStringTree(parser)) {
+                case "T" -> opepator = "true";
+                case  "NIL" -> opepator = "false";
+                default -> opepator = parseTree.toStringTree(parser);
+            }
             if (needReturn) {
-                return "return " + parseTree.toStringTree(parser) + ";";
+                return "return " + opepator + ";";
             } else {
-                return parseTree.toStringTree(parser);
+                return opepator;
             }
         }
         return null;

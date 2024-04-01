@@ -146,6 +146,11 @@ public class Vision {
             case "lambda" -> {
                 handleLambda(ctx, javaLineBuilder, needReturn);
             }
+
+            case "loop" -> {
+                javaLineBuilder.append(handleLoop(ctx, needReturn));
+            }
+
             case "list" -> {
                 javaLineBuilder.append(handleList(ctx, needReturn));
             }
@@ -462,6 +467,34 @@ public class Vision {
         }
 
     }
+
+    private String handleLoop(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+
+        String variable = ctx.getChild(3).getText();
+        String start = ctx.getChild(5).getText();
+        String end = ctx.getChild(7).getText();
+
+        javaLineBuilder.append("for (int ")
+                .append(variable)
+                .append(" = ")
+                .append(start)
+                .append("; ")
+                .append(variable)
+                .append(" <= ")
+                .append(end)
+                .append("; ")
+                .append(variable)
+                .append("++) {\n");
+
+        for (int i = 9; i < ctx.getChildCount() - 1; i++) {
+            javaLineBuilder.append(visit(ctx.getChild(i), false)).append(";\n");
+        }
+        javaLineBuilder.append("}\n");
+
+        return javaLineBuilder.toString();
+    }
+
 
     private String handleList(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         StringBuilder javaLineBuilder = new StringBuilder();

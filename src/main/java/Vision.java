@@ -148,7 +148,7 @@ public class Vision {
             }
 
             case "loop" -> {
-                javaLineBuilder.append(handleLoop(ctx.getChild(1), needReturn));
+                javaLineBuilder.append(handleLoop(ctx, needReturn));
             }
 
             case "list" -> {
@@ -452,12 +452,12 @@ public class Vision {
 
     }
 
-    private String handleLoop(ParseTree ctx, boolean needReturn) {
+    private String handleLoop(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         StringBuilder javaLineBuilder = new StringBuilder();
 
-        String variable = ctx.getChild(2).getText();
-        String start = ctx.getChild(4).getText();
-        String end = ctx.getChild(6).getText();
+        String variable = ctx.getChild(3).getText();
+        String start = ctx.getChild(5).getText();
+        String end = ctx.getChild(7).getText();
 
         javaLineBuilder.append("for (int ")
                 .append(variable)
@@ -471,8 +471,9 @@ public class Vision {
                 .append(variable)
                 .append("++) {\n");
 
-        javaLineBuilder.append(visit(ctx.getChild(9), false)).append("\n");
-
+        for (int i = 9; i < ctx.getChildCount() - 1; i++) {
+            javaLineBuilder.append(visit(ctx.getChild(i), false)).append(";\n");
+        }
         javaLineBuilder.append("}\n");
 
         return javaLineBuilder.toString();

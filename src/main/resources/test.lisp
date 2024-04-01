@@ -27,7 +27,7 @@
 
 ((lambda (x) (* x x))  5)
 
-(add 5 3)
+(add 3 1)
 (subtract 10 4)
 (multiply 2 6)
 (divide 8 2)
@@ -35,13 +35,13 @@
 
 ( let (( x 10)
         (y 5))
-     (print x y)
+     (print (add x y))
      )
 
 
+(print (factorial 5))
 (print (and (> 5 3) (< 7 10)))
 (print (or (< 5 3) (> 7 10)))
 (print (not (= 5 5)))
-
 (print (rem 10 3))
 (print (mod 10 3))

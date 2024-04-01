@@ -7,8 +7,8 @@ import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) {
-
-        String filePath = "src/main/resources/test.lisp";
+//        String filePath = "src/main/resources/testDefault.lisp";
+                String filePath = "src/main/resources/test.lisp";
         CharStream inputFile = null;
         try {
             inputFile = CharStreams.fromPath(Paths.get(filePath));

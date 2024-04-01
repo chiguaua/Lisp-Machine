@@ -16,8 +16,9 @@ public class lisp_to_javaParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		IDENTIFIER=1, PLUS=2, MINUS=3, MULT=4, DIV=5, OP=6, CP=7, LOGIC=8, STRING=9, 
-		NUMBER=10, WHITESPACE=11, DIGIT=12, LETTER=13, LOWER=14, UPPER=15;
+		IDENTIFIER=1, PLUS=2, MINUS=3, MULT=4, DIV=5, OP=6, CP=7, LOGIC=8, ADDITIONAL=9, 
+		SPACE=10, STRING=11, NUMBER=12, WHITESPACE=13, DIGIT=14, LETTER=15, LOWER=16, 
+		UPPER=17;
 	public static final int
 		RULE_program = 0, RULE_expression = 1;
 	private static String[] makeRuleNames() {
@@ -36,7 +37,8 @@ public class lisp_to_javaParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, "IDENTIFIER", "PLUS", "MINUS", "MULT", "DIV", "OP", "CP", "LOGIC", 
-			"STRING", "NUMBER", "WHITESPACE", "DIGIT", "LETTER", "LOWER", "UPPER"
+			"ADDITIONAL", "SPACE", "STRING", "NUMBER", "WHITESPACE", "DIGIT", "LETTER", 
+			"LOWER", "UPPER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -207,7 +209,7 @@ public class lisp_to_javaParser extends Parser {
 			setState(19);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1602L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 6210L) != 0)) {
 				{
 				setState(17);
 				_errHandler.sync(this);
@@ -260,7 +262,7 @@ public class lisp_to_javaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u000f\u0019\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
+		"\u0004\u0001\u0011\u0019\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
 		"\u0001\u0000\u0005\u0000\u0006\b\u0000\n\u0000\f\u0000\t\t\u0000\u0001"+
 		"\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
 		"\u0001\u0005\u0001\u0012\b\u0001\n\u0001\f\u0001\u0015\t\u0001\u0001\u0001"+
@@ -271,7 +273,7 @@ public class lisp_to_javaParser extends Parser {
 		"\u0001\u0000\u0000\u0000\b\n\u0001\u0000\u0000\u0000\t\u0007\u0001\u0000"+
 		"\u0000\u0000\n\u000b\u0005\u0000\u0000\u0001\u000b\u0001\u0001\u0000\u0000"+
 		"\u0000\f\u0013\u0005\u0006\u0000\u0000\r\u0012\u0005\u0001\u0000\u0000"+
-		"\u000e\u0012\u0005\t\u0000\u0000\u000f\u0012\u0005\n\u0000\u0000\u0010"+
+		"\u000e\u0012\u0005\u000b\u0000\u0000\u000f\u0012\u0005\f\u0000\u0000\u0010"+
 		"\u0012\u0003\u0002\u0001\u0000\u0011\r\u0001\u0000\u0000\u0000\u0011\u000e"+
 		"\u0001\u0000\u0000\u0000\u0011\u000f\u0001\u0000\u0000\u0000\u0011\u0010"+
 		"\u0001\u0000\u0000\u0000\u0012\u0015\u0001\u0000\u0000\u0000\u0013\u0011"+

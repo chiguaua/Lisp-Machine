@@ -23,6 +23,7 @@ public class Vision {
 
         this.parser = parser;
     }
+
     Vision(Parser parser, String txt) {
         this.outputFile = txt;
         this.parser = parser;
@@ -69,37 +70,6 @@ public class Vision {
                 javaLineBuilder.append("}");
             }
 
-
-//            case "+" -> {
-//                List<String> checkList = Arrays.asList("Integer", "Float", "Double", "String");
-//                for (String x : checkList) {
-//                    javaLineBuilder.append(" if (")
-//                            .append(visit(ctx.getChild(2), false))
-//                            .append(" instanceof " + x + " && ")
-//                            .append(visit(ctx.getChild(3), false))
-//                            .append(" instanceof " + x + ") {\n");
-//                    if (needReturn) {
-//                        javaLineBuilder
-//                                .append("return ")
-//                                .append(" (" + x + ") ")
-//                                .append(visit(ctx.getChild(2), false))
-//                                .append(visit(ctx.getChild(1), false))
-//                                .append(" (" + x + ") ")
-//                                .append(visit(ctx.getChild(3), false))
-//                                .append(";\n ");
-//                    } else {
-//                        javaLineBuilder
-//                                .append(" (" + x + ") ")
-//                                .append(visit(ctx.getChild(2), false))
-//                                .append(visit(ctx.getChild(1), false))
-//                                .append(" (" + x + ") ")
-//                                .append(visit(ctx.getChild(3), false));
-//                    }
-//                    javaLineBuilder.append("\n}");
-//                }
-//                javaLineBuilder.append("throw new ClassCastException(\"Ошибка при попытке применения функции к типу.\");");
-//
-//            }
             case "+", "-", "*", "/", ">", "<", "=", "rem", "mod", ">=", "<=" -> {
                 String operator = "";
                 switch (ctx.IDENTIFIER(0).getText()) {
@@ -124,7 +94,7 @@ public class Vision {
                             .append(");\n ");
                 } else {
                     javaLineBuilder
-                            .append("(((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()" )
+                            .append("(((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()")
                             .append(operator)
                             .append(" ((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()" + ")");
                 }
@@ -134,15 +104,9 @@ public class Vision {
                         .append("System.out.println")
                         .append(visitStringConcat(ctx));
             }
-
-
-            // user input
-
             case "read" -> {
                 javaLineBuilder.append("scanner.nextInt()");
             }
-
-
             case "let" -> {
                 javaLineBuilder
                         .append(visitLetParam(ctx.getChild(2)))
@@ -162,8 +126,6 @@ public class Vision {
                 }
                 javaLineBuilder.append("\n}");
             }
-
-
             case "and" -> {
                 javaLineBuilder
                         .append(visit(ctx.getChild(2), false))
@@ -180,12 +142,10 @@ public class Vision {
                 javaLineBuilder.append("!")
                         .append(visit(ctx.getChild(2), false));
             }
-
             // lambda - creates an anonymous function.
             case "lambda" -> {
                 handleLambda(ctx, javaLineBuilder, needReturn);
             }
-
             case "list" -> {
                 javaLineBuilder.append(handleList(ctx, needReturn));
             }
@@ -196,8 +156,13 @@ public class Vision {
                 }
                 System.out.println("sss");
             }
-            case "do" -> {
 
+            // cond expression
+            case "cond" -> {
+                javaLineBuilder.append(handleCond(ctx, needReturn));
+            }
+
+            case "do" -> {
                 javaLineBuilder.append(handleDo(ctx, false));
             }
             default -> {
@@ -306,17 +271,17 @@ public class Vision {
         } else if (parseTree instanceof lisp_to_javaParser.ExpressionContext) {
             return visitExpression((lisp_to_javaParser.ExpressionContext) parseTree, needReturn);
         } else {
-            //Полагаю тут может быть константа/переменная. ~ const/var
-            String opepator = "";
+            // Handle other cases
+            String operator = "";
             switch (parseTree.toStringTree(parser)) {
-                case "T" -> opepator = "true";
-                case  "NIL" -> opepator = "false";
-                default -> opepator = parseTree.toStringTree(parser);
+                case "T" -> operator = "true";
+                case "NIL" -> operator = "false";
+                default -> operator = parseTree.toStringTree(parser);
             }
             if (needReturn) {
-                return "return " + opepator + ";";
+                return "return " + operator + ";";
             } else {
-                return opepator;
+                return operator;
             }
         }
         return null;
@@ -509,6 +474,28 @@ public class Vision {
 
         return javaLineBuilder.toString();
     }
+
+    private String handleCond(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+
+        javaLineBuilder.append("if (");
+        for (int i = 2; i < ctx.getChildCount() - 1; i += 1) {
+            ParseTree branch = ctx.getChild(i);
+
+            javaLineBuilder.append(visit(branch.getChild(1), false))
+                    .append(") {")
+                    .append(visit(branch.getChild(2), needReturn) + ";\n");
+            if (i < ctx.getChildCount() - 2) {
+                javaLineBuilder.append("} else if (");
+            } else {
+                javaLineBuilder.append("} else {\n");
+            }
+        }
+        // Add a default case if none of the conditions match
+        javaLineBuilder.append("throw new IllegalArgumentException(\"No branch of cond matched\");\n");
+        javaLineBuilder.append("}");
+
+  
     private String handleDo(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         StringBuilder javaLineBuilder = new StringBuilder();
         //ctx.getChild(2)  действие
@@ -545,7 +532,7 @@ public class Vision {
                 .append("\n}");
 
 
+
         return javaLineBuilder.toString();
     }
-
 }

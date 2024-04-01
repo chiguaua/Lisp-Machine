@@ -494,6 +494,8 @@ public class Vision {
         // Add a default case if none of the conditions match
         javaLineBuilder.append("throw new IllegalArgumentException(\"No branch of cond matched\");\n");
         javaLineBuilder.append("}");
+        return javaLineBuilder.toString();
+    }
 
   
     private String handleDo(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {

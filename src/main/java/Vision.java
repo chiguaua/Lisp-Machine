@@ -13,13 +13,21 @@ public class Vision {
 
     List<String> mainBody = new ArrayList<>();
 
+    String outputFile = "defaultOutput.txt";
+
     String type = "Object";
 
     HashMap<String, String> nameSpace = new HashMap<>();
 
     Vision(Parser parser) {
+
         this.parser = parser;
     }
+    Vision(Parser parser, String txt) {
+        this.outputFile = txt;
+        this.parser = parser;
+    }
+
 
     public String visitExpression(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         StringBuilder javaLineBuilder = new StringBuilder();
@@ -170,6 +178,13 @@ public class Vision {
 
             case "list" -> {
                 javaLineBuilder.append(handleList(ctx, needReturn));
+            }
+            case "@call-java" -> {
+                for (int i = 2; i < ctx.getChildCount() - 1; i++) {
+                    ParseTree child = ctx.getChild(i);
+                    javaLineBuilder.append(child.getText());
+                }
+                System.out.println("sss");
             }
 
             default -> {

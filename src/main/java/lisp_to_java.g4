@@ -12,7 +12,7 @@ expression: OP (IDENTIFIER | STRING | NUMBER | expression)* CP;
 /*------------------------------------------------------------------
  * LEXER RULES
  *------------------------------------------------------------------*/
-IDENTIFIER : ((LETTER (LETTER | DIGIT)*) | PLUS | MINUS | MULT | DIV | LOGIC ) ;
+IDENTIFIER : ( (LETTER | DIGIT | ADDITIONAL)* | PLUS | MINUS | MULT | DIV | LOGIC ) ;
 
 PLUS : '+';
 MINUS : '-';
@@ -21,9 +21,10 @@ DIV : '/';
 OP : '(';
 CP : ')';
 LOGIC : '>' | '<' | '=' | '/=';
+ADDITIONAL : '\'' | '"' | '-' | '@' | '.';
+SPACE  : [ \t\r\n]+ -> skip;
 
-
-STRING : '"' (LETTER | DIGIT)+ '"';
+STRING : '"' (LETTER | DIGIT | SPACE)+ '"';
 
 NUMBER : (DIGIT)+ ;
 

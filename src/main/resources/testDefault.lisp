@@ -1,6 +1,3 @@
-
-(@call-java System.out.println("CALL JAVA FROM LISP"))
-
 (defun add (a b)
   (+ a b))
 
@@ -41,8 +38,7 @@
      (print (add x y))
      )
 
-(print (or T NIL))
-(print (and (> 4 2) (= 3 1)))
+
 (print (factorial 5))
 (print (and (> 5 3) (< 7 10)))
 (print (or (< 5 3) (> 7 10)))

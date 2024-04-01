@@ -1,48 +1,37 @@
-import java.util.function.Function;
+import java.util.Scanner;
 
-public class TestOut {
-    public static int add(int a, int b) {
-        return a + b;
+public class TestOut {public static Object add(Object a, Object b) {
+    return (((Number) a).doubleValue()+((Number) b).doubleValue());
+}
+    public static Object aAdd(Object a, Object b) {
+        return (((Number) (((Number) a).doubleValue()+((Number) b).doubleValue())).doubleValue()+((Number) a).doubleValue());
     }
-
-    public static int aAdd(int a , int b) {
-        return a + b + a;
+    public static Object subtract(Object a, Object b) {
+        return (((Number) a).doubleValue()-((Number) b).doubleValue());
     }
-
-    public static int subtract(int a, int b) {
-        return a - b;
+    public static Object multiply(Object a, Object b) {
+        return (((Number) a).doubleValue()*((Number) b).doubleValue());
     }
-
-    public static int multiply(int a, int b) {
-        return a * b;
+    public static Object divide(Object a, Object b) {
+        return (((Number) a).doubleValue()/((Number) b).doubleValue());
     }
-
-    public static int divide(int a, int b) {
-        return a / b;
-    }
-
-    public static int factorial(int a) {
-        if (a > 1) {
-            return a * factorial(a - 1);
+    public static Object factorial(Object a) {
+        if ((((Number) a).doubleValue()>((Number) 1).doubleValue())) {
+            return (((Number) a).doubleValue()*((Number) factorial((((Number) a).doubleValue()-((Number) 1).doubleValue()))).doubleValue());
 
         } else {
             return 1;
-        }
-    }
-
+        }}
     public static void main(String[] args) {
-        System.out.println(java.util.Arrays.asList(1, 2, 3, 4));
-        Function<Integer, Integer> lambdaFunction1 = (x) -> {
-            return x * x;
-        };
-        lambdaFunction1.apply(5);
-        add(5, 3);
-        subtract(10, 4);
-        multiply(2, 6);
-        divide(8, 2);
-        System.out.println("dddqddq");
-        int x = 10;
-        int y = 5;
-        System.out.println(x + y);
+        Scanner scanner = new Scanner(System.in);
+
+
+        Object input = scanner.nextInt();
+        System.out.println(input );
+
+
+
+
+        scanner.close();
     }
 }

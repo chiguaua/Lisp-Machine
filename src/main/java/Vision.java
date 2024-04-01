@@ -12,8 +12,6 @@ public class Vision {
     Parser parser;
 
     List<String> mainBody = new ArrayList<>();
-    List<String> macros = new ArrayList<>(); // Add this line to declare the macros list
-
 
     String type = "Object";
 
@@ -21,29 +19,11 @@ public class Vision {
 
     Vision(Parser parser) {
         this.parser = parser;
-        initializeMacros();
     }
-
-
-    // Macros
-    private void initializeMacros() {
-        macros.add("square");
-        macros.add("double");
-    }
-
-
 
     public String visitExpression(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         //System.out.println("Идентификатор: " + ctx.IDENTIFIER(0).getText());
         StringBuilder javaLineBuilder = new StringBuilder();
-
-        // checking if the expression is a macro call or not?
-        String identifier = ctx.getChild(0).getText(); // Get the first child text
-        if (macros.contains(identifier)) {
-            return translateMacro(ctx, needReturn);
-        }
-
-
 
         if (ctx.getChild(1) instanceof lisp_to_javaParser.ExpressionContext) {
             String applyLam = "";
@@ -80,7 +60,6 @@ public class Vision {
                 }
                 javaLineBuilder.append("}");
             }
-
 
 
 //            case "+" -> {
@@ -141,13 +120,8 @@ public class Vision {
             // user input
 
             case "read" -> {
-                javaLineBuilder.append("Scanner scanner = new Scanner(System.in);\n");
-                javaLineBuilder.append("System.out.println(\"Enter a value:\");\n");
-                javaLineBuilder.append(type + " userInput = scanner.next" + "(" + type + ".class);\n");
+                javaLineBuilder.append("scanner.nextInt()");
             }
-
-
-
 
 
             case "let" -> {
@@ -232,46 +206,6 @@ public class Vision {
         return javaLineBuilder.toString();
     }
 
-    // macros
-
-    private String translateMacro(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
-        StringBuilder javaLineBuilder = new StringBuilder();
-        String macroName = ctx.IDENTIFIER(0).getText();
-        javaLineBuilder.append("// Translated macro: ").append(macroName).append("\n");
-
-        switch (macroName) {
-            case "square" -> {
-                // Extract the argument from the macro
-                String argument = visit(ctx.getChild(2), false);
-
-                // Translate square macro
-                javaLineBuilder.append("int squareResult = ").append(argument).append(" * ").append(argument).append(";\n");
-
-                if (needReturn) {
-                    javaLineBuilder.append("return squareResult;\n");
-                }
-                break; // Add break statement
-            }
-            case "double" -> {
-                // Extract the argument from the macro
-                String argument = visit(ctx.getChild(2), false);
-
-                // Translate double macro
-                javaLineBuilder.append("int doubleResult = ").append(argument).append(" + ").append(argument).append(";\n");
-
-                if (needReturn) {
-                    javaLineBuilder.append("return doubleResult;\n");
-                }
-                break; // Add break statement
-            }
-            // Add more cases for other macros
-            default -> throw new IllegalArgumentException("Macro " + macroName + " not found or not supported.");
-        }
-        return javaLineBuilder.toString();
-    }
-
-
-
     private void handleLambda(lisp_to_javaParser.ExpressionContext ctx, StringBuilder javaLineBuilder, boolean needReturn) {
 
         String lambdaName = "lambdaFunction" + mainBody.size();
@@ -329,7 +263,7 @@ public class Vision {
             try {
                 outputStream = new FileOutputStream(myFile);
 
-                byte[] buffer = "public class TestOut {" .getBytes();
+                byte[] buffer = "public class TestOut {".getBytes();
                 outputStream.write(buffer);
                 for (ParseTree exprCtx : ctx.children) {
                     System.out.println(exprCtx.toStringTree(parser) + "============================================================");
@@ -337,20 +271,20 @@ public class Vision {
                     System.out.println(currOut);
                     if (currOut.startsWith("public")) {
                         outputStream.write(currOut.getBytes());
-                        outputStream.write("\n" .getBytes());
+                        outputStream.write("\n".getBytes());
                     } else if (!currOut.startsWith("<EOF>")) {
                         mainBody.add(currOut);
                     }
 
                 }
-                buffer = " public static void main(String[] args) {" .getBytes();
+                buffer = " public static void main(String[] args) {\nScanner scanner = new Scanner(System.in);\n".getBytes();
                 outputStream.write(buffer);
 
                 for (String x : mainBody) {
                     outputStream.write(x.getBytes());
-                    outputStream.write(";\n" .getBytes());
+                    outputStream.write(";\n".getBytes());
                 }
-                buffer = "}\n}" .getBytes();
+                buffer = "scanner.close();\n}\n}".getBytes();
                 outputStream.write(buffer);
                 outputStream.close();
             } catch (IOException e) {

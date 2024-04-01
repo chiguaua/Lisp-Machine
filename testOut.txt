@@ -20,31 +20,10 @@ return (((Number) a).doubleValue()*((Number) factorial((((Number) a).doubleValue
 } else { 
 return 1;
 }}
-public static Object rea) {
-return format(t, a, value, finish(-, output), Object user = -;
-user);
- }
- public static void main(String[] args) {System.out.println(java.util.Arrays.asList(1, 2, 3, 4));
-Function<Object, Object> lambdaFunction1 = ( x) -> {return (((Number) x).doubleValue()*((Number) x).doubleValue());
- };
-lambdaFunction1.apply(5);
-add(3, 1);
-subtract(10, 4);
-multiply(2, 6);
-divide(8, 2);
-System.out.println("dddqddq" );
-Object x = 10;
-Object y = 5;
-System.out.println(add(x, y));
-System.out.println(factorial(5));
-System.out.println((((Number) 5).doubleValue()>((Number) 3).doubleValue()) && (((Number) 7).doubleValue()<((Number) 10).doubleValue()));
-System.out.println((((Number) 5).doubleValue()<((Number) 3).doubleValue()) || (((Number) 7).doubleValue()>((Number) 10).doubleValue()));
-System.out.println(!=(5, 5));
-System.out.println(rem(10, 3));
-System.out.println(mod(10, 3));
-defmacro(square, x(), `, (((Number) ,).doubleValue()*((Number) x).doubleValue()));
-defmacro(double, x(), `, (((Number) ,).doubleValue()+((Number) x).doubleValue()));
-System.out.println(square(3));
-System.out.println(double(4));
+ public static void main(String[] args) {
+Scanner scanner = new Scanner(System.in);
+Object input = scanner.nextInt();
+System.out.println(input );
+scanner.close();
 }
 }

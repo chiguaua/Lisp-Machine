@@ -69,10 +69,11 @@ public class Vision {
                 }
                 javaLineBuilder.append("}");
             }
-            case "+", "-", "*", "/", ">", "<", "=", "rem", "mod" -> {
+
+            case "+", "-", "*", "/", ">", "<", "=", "rem", "mod", ">=", "<=" -> {
                 String operator = "";
                 switch (ctx.IDENTIFIER(0).getText()) {
-                    case "+", "-", "*", "/", ">", "<" -> {
+                    case "+", "-", "*", "/", ">", "<", ">=", "<=" -> {
                         operator = ctx.IDENTIFIER(0).getText();
                     }
                     case "=" -> {
@@ -155,11 +156,15 @@ public class Vision {
                 }
                 System.out.println("sss");
             }
+
             // cond expression
             case "cond" -> {
                 javaLineBuilder.append(handleCond(ctx, needReturn));
             }
 
+            case "do" -> {
+                javaLineBuilder.append(handleDo(ctx, false));
+            }
             default -> {
                 if (needReturn) {
                     javaLineBuilder
@@ -411,7 +416,7 @@ public class Vision {
             }
         } else if (ctx instanceof lisp_to_javaParser.ExpressionContext) {
             switch (((lisp_to_javaParser.ExpressionContext) ctx).IDENTIFIER(0).getText()) {
-                case "+", "-", "*", "/", ">", "<", "==" -> {
+                case "+", "-", "*", "/", ">", "<", "==", ">=", "<=" -> {
                     for (int i = 2; i < ctx.getChildCount() - 1; i++) {
                         ParseTree child = ctx.getChild(i);
                         checkType(argName, child, "double");
@@ -469,6 +474,7 @@ public class Vision {
 
         return javaLineBuilder.toString();
     }
+
     private String handleCond(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         StringBuilder javaLineBuilder = new StringBuilder();
 
@@ -488,6 +494,43 @@ public class Vision {
         // Add a default case if none of the conditions match
         javaLineBuilder.append("throw new IllegalArgumentException(\"No branch of cond matched\");\n");
         javaLineBuilder.append("}");
+
+  
+    private String handleDo(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+        //ctx.getChild(2)  действие
+        //ctx.getChild(3) Условие
+        //ctx.getChild(4+) Тело
+        ParseTree action =  ctx.getChild(2);
+        StringBuilder javaLineBuilderEndWhile = new StringBuilder();
+        for (int i = 1; i < action.getChildCount() - 1; i++) {
+            ParseTree child = action.getChild(i);
+            if (child instanceof TerminalNode) {
+                throw new RuntimeException("Do Exception " + child.getText());
+            } else if (child instanceof lisp_to_javaParser.ExpressionContext) {
+                javaLineBuilder
+                        .append(type + " ")
+                        .append(child.getChild(1))
+                        .append(" = ")
+                        .append(visit(child.getChild(2), false))
+                        .append(";\n");
+                javaLineBuilderEndWhile.append(child.getChild(1) + " = " + visit(child.getChild(3), false) + ";\n");
+            }
+        }
+
+        javaLineBuilder
+                .append("while (!")
+                .append(visit(ctx.getChild(3).getChild(1), false))
+                .append(") {\n");
+        for (int i = 4; i < ctx.getChildCount() - 1; i++) {
+            javaLineBuilder.append(visit(ctx.getChild(i), false) + ";\n");
+        }
+
+
+        javaLineBuilder
+                .append(javaLineBuilderEndWhile)
+                .append("\n}");
+
 
 
         return javaLineBuilder.toString();

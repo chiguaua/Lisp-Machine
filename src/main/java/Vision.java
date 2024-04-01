@@ -80,6 +80,9 @@ public class Vision {
                 }
                 javaLineBuilder.append("}");
             }
+
+
+
 //            case "+" -> {
 //                List<String> checkList = Arrays.asList("Integer", "Float", "Double", "String");
 //                for (String x : checkList) {
@@ -109,7 +112,10 @@ public class Vision {
 //                }
 //                javaLineBuilder.append("throw new ClassCastException(\"Ошибка при попытке применения функции к типу.\");");
 //
-//            }
+//
+//          }
+
+
             case "+", "-", "*", "/", ">", "<", "==" -> {
                 if (needReturn) {
                     javaLineBuilder
@@ -130,6 +136,20 @@ public class Vision {
                         .append("System.out.println")
                         .append(visitStringConcat(ctx));
             }
+
+
+            // user input
+
+            case "read" -> {
+                javaLineBuilder.append("Scanner scanner = new Scanner(System.in);\n");
+                javaLineBuilder.append("System.out.println(\"Enter a value:\");\n");
+                javaLineBuilder.append(type + " userInput = scanner.next" + "(" + type + ".class);\n");
+            }
+
+
+
+
+
             case "let" -> {
                 javaLineBuilder
                         .append(visitLetParam(ctx.getChild(2)))

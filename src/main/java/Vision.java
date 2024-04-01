@@ -88,19 +88,33 @@ public class Vision {
 //                javaLineBuilder.append("throw new ClassCastException(\"Ошибка при попытке применения функции к типу.\");");
 //
 //            }
-            case "+", "-", "*", "/", ">", "<", "==" -> {
+            case "+", "-", "*", "/", ">", "<", "=", "rem", "mod" -> {
+                String operator = "";
+                switch (ctx.IDENTIFIER(0).getText()) {
+                    case "+", "-", "*", "/", ">", "<" -> {
+                        operator = ctx.IDENTIFIER(0).getText();
+                    }
+                    case "=" -> {
+                        operator = "==";
+                    }
+                    case "rem", "mod" -> {
+                        operator = "%";
+                    }
+                    default -> operator = "Programming Error";
+                }
+
                 if (needReturn) {
                     javaLineBuilder
                             .append("return (")
-                            .append("((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()")
-                            .append(visit(ctx.getChild(1), false))
-                            .append("((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()")
+                            .append("((Number) " + visit(ctx.getChild(2), false) + ").doubleValue() ")
+                            .append(operator)
+                            .append(" ((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()")
                             .append(");\n ");
                 } else {
                     javaLineBuilder
-                            .append("(((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()")
-                            .append(visit(ctx.getChild(1), false))
-                            .append("((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()" + ")");
+                            .append("(((Number) " + visit(ctx.getChild(2), false) + ").doubleValue()" )
+                            .append(operator)
+                            .append(" ((Number) " + visit(ctx.getChild(3), false) + ").doubleValue()" + ")");
                 }
             }
             case "print" -> {
@@ -144,24 +158,6 @@ public class Vision {
                 javaLineBuilder.append("!")
                         .append(visit(ctx.getChild(2), false));
             }
-
-            case "rem" -> {
-                javaLineBuilder.append("rem(")
-                        .append(visit(ctx.getChild(2), false))
-                        .append(", ")
-                        .append(visit(ctx.getChild(3), false))
-                        .append(")");
-            }
-            case "mod" -> {
-                javaLineBuilder.append("mod(")
-                        .append(visit(ctx.getChild(2), false))
-                        .append(", ")
-                        .append(visit(ctx.getChild(3), false))
-                        .append(")");
-            }
-
-
-
 
             // lambda - creates an anonymous function.
             case "lambda" -> {

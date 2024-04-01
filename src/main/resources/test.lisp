@@ -38,7 +38,8 @@
      (print (add x y))
      )
 
-
+(print (or true false))
+(print (and (> 4 2) (= 3 1)))
 (print (factorial 5))
 (print (and (> 5 3) (< 7 10)))
 (print (or (< 5 3) (> 7 10)))

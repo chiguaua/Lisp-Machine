@@ -48,3 +48,6 @@
 (print (rem 10 3))
 (print (mod 10 3))
 
+(let ((input (read)))  (print input))
+
+(@call-java System.out.println("CALL JAVA FROM LISP"))

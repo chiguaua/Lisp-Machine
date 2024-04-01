@@ -165,6 +165,10 @@ public class Vision {
             case "do" -> {
                 javaLineBuilder.append(handleDo(ctx, false));
             }
+
+            case "setq" -> {
+               javaLineBuilder.append(visitLetSetq(ctx));
+            }
             default -> {
                 if (needReturn) {
                     javaLineBuilder
@@ -392,6 +396,18 @@ public class Vision {
                     .append(exprCtx.getChild(1))
                     .append(" = ")
                     .append(visit(exprCtx.getChild(2), false))
+                    .append(";\n");
+        }
+        return javaLineBuilder.toString();
+    }
+    public String visitLetSetq(ParseTree parseTree) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+        for (int i = 2; i < parseTree.getChildCount() - 1; i+=2) {
+            javaLineBuilder
+                    .append("public static " + type + " ")
+                    .append(parseTree.getChild(i))
+                    .append(" = ")
+                    .append(visit(parseTree.getChild(i+1), false))
                     .append(";\n");
         }
         return javaLineBuilder.toString();

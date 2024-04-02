@@ -20,3 +20,10 @@
       do (print i)
         (print (+ 1 i))
       )
+
+
+(let ((lst (list 1 2 3 4)))
+  (print (car lst))
+  (print (cdr lst))
+  (print (cons 0 lst)))
+

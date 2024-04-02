@@ -154,6 +154,17 @@ public class Vision {
             case "list" -> {
                 javaLineBuilder.append(handleList(ctx, needReturn));
             }
+
+            case "car" -> {
+                javaLineBuilder.append(handleCar(ctx, needReturn));
+            }
+            case "cdr" -> {
+                javaLineBuilder.append(handleCdr(ctx, needReturn));
+            }
+            case "cons" -> {
+                javaLineBuilder.append(handleCons(ctx, needReturn));
+            }
+
             case "@call-java" -> {
                 for (int i = 2; i < ctx.getChildCount() - 1; i++) {
                     ParseTree child = ctx.getChild(i);
@@ -539,6 +550,27 @@ System.out.println("CHEEEK1");
 
         return javaLineBuilder.toString();
     }
+
+    private String handleCar(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        return visit(ctx.getChild(2), needReturn);
+    }
+
+    // Translation for cdr function
+    private String handleCdr(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        String list = visit(ctx.getChild(2), needReturn);
+        // In Lisp, cdr returns the list without its first element, which can be represented in Java as a sublist starting from index 1
+        return list + ".subList(1, " + list + ".size())";
+    }
+
+    // Translation for cons function
+    private String handleCons(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        String newElement = visit(ctx.getChild(2), needReturn);
+        String existingList = visit(ctx.getChild(3), needReturn);
+        // In Java, to add an element to the beginning of a list, we can use LinkedList's addFirst method
+        return existingList + ".addFirst(" + newElement + ")";
+    }
+
+
 
     private String handleCond(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
         StringBuilder javaLineBuilder = new StringBuilder();

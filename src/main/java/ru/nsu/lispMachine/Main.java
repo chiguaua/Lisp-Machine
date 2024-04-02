@@ -3,6 +3,9 @@ package ru.nsu.lispMachine;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import ru.nsu.lispMachine.Parser.lisp_to_javaLexer;
+import ru.nsu.lispMachine.Parser.lisp_to_javaParser;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Scanner;
@@ -10,12 +13,11 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-//        test
-//        file Fin Fout
-//        code program $$(end program)
+
         Scanner scanner = new Scanner(System.in);
         String input = scanner.next();
 
+        RunFramework.SetDefaultHandler();
         switch (input) {
             case "test" -> {
                 String filePath = "src/main/resources/test.lisp";
@@ -29,8 +31,9 @@ public class Main {
                 CommonTokenStream tokens = new CommonTokenStream(lexer);
                 lisp_to_javaParser parser = new lisp_to_javaParser(tokens);
 
-                Vision visitor = new Vision(parser, "src/test/java/TestOut.java");
-                visitor.visit(parser.program(), false);
+                Vision.setParser(parser);
+                Vision.setOutputFile("src/test/java/TestOut.java");
+                Vision.visit(parser.program(), false);
             }
             case "file" -> {
                 String lispFileName = scanner.next();
@@ -46,8 +49,9 @@ public class Main {
                 CommonTokenStream tokens = new CommonTokenStream(lexer);
                 lisp_to_javaParser parser = new lisp_to_javaParser(tokens);
 
-                Vision visitor = new Vision(parser, javaFileName);
-                visitor.visit(parser.program(), false);
+                Vision.setParser(parser);
+                Vision.setOutputFile(javaFileName);
+                Vision.visit(parser.program(), false);
             }
             case "code" -> {
                 StringBuilder inputBuilder = new StringBuilder();
@@ -66,13 +70,11 @@ public class Main {
                 CommonTokenStream tokens = new CommonTokenStream(lexer);
                 lisp_to_javaParser parser = new lisp_to_javaParser(tokens);
 
-                Vision visitor = new Vision(parser);
-                visitor.visit(parser.program(), false);
+                Vision.setParser(parser);
+                Vision.visit(parser.program(), false);
             }
             default -> System.out.println(input);
         }
-
-
 
         scanner.close();
     }

@@ -1,4 +1,4 @@
-package ru.nsu.lispMachine;// Generated from C:/Global/prog/Lisp/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
+package ru.nsu.lispMachine.Parser;// Generated from C:/Global/prog/Lisp/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.*;
@@ -85,7 +85,7 @@ public class lisp_to_javaLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "ru/nsu/lispMachine/lisp_to_java.g4"; }
+	public String getGrammarFileName() { return "ru/nsu/lispMachine/Parser/lisp_to_java.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

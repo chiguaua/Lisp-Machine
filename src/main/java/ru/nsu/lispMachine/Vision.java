@@ -1,3 +1,5 @@
+package ru.nsu.lispMachine;
+
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;

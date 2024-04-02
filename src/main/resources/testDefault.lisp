@@ -3,6 +3,8 @@
 (defun aAdd (a b)
   (+ (+ a b) a))
 
+(defun add (a b)
+  (+ a b))
 
 (defun subtract (a b)
   (- a b))
@@ -19,8 +21,6 @@
   1
   )
 )
-
-
 
 (print(list 1 2 3 4))
 

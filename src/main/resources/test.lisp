@@ -1,29 +1,13 @@
 
 
-(setq a 1
-      b 2)
-
-(let (( x 4))
-(cond
-((= x 1) (print "1"))
-((= x 2) (print "2"))
-((= x 3) (print "3"))
-(T (print "S"))
-)
-)
-
-(let ((input (read)))  (print input))
-
-(@call-java System.out.println("CALL JAVA FROM LISP"))
-
-(loop for i from 1 to 5
-      do (print i)
-        (print (+ 1 i))
-      )
 
 
-(let ((lst (list 1 2 3 4)))
-  (print (car lst))
-  (print (cdr lst))
-  (print (cons 0 lst)))
+(setq x 10)
+(setf x 20)
+(print x)
+
+(setq lst '(1 2 3 4))
+(setf (car lst) 5)
+
+(print lst)
 

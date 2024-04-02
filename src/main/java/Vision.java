@@ -209,13 +209,23 @@ public class Vision {
     }
 
     private String handleSetf(lisp_to_javaParser.ExpressionContext ctx, boolean needReturn) {
+        StringBuilder javaLineBuilder = new StringBuilder();
+
         // Extract variable name and value expression from setf call
         String variable = ctx.getChild(2).getText();
-        String value = visit(ctx.getChild(3), needReturn);
+        String value = visit(ctx.getChild(3), false); // Value is always a child expression
 
         // Generate Java code to assign value to the variable
-        return variable + " = " + value;
+        javaLineBuilder.append(type + " ").append(variable).append(" = ").append(value);
+
+        // Add semicolon if needed
+        if (needReturn) {
+            javaLineBuilder.append(";");
+        }
+
+        return javaLineBuilder.toString();
     }
+
 
 
     private void handleLambda(lisp_to_javaParser.ExpressionContext ctx, StringBuilder javaLineBuilder, boolean needReturn) {

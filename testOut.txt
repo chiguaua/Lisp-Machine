@@ -1,14 +1,9 @@
-public class TestOut {public static Object x = 10;
-
-public static Object lst = ';
-public static Object [16 4] = );
-
- public static void main(String[] args) {
+public class TestOut { public static void main(String[] args) {
 Scanner scanner = new Scanner(System.in);
-x = 20;
-System.out.println(x );
-(carlst) = 5;
-System.out.println(lst );
+Object x = 10;
+Object y = "Hello";
+Object z = (((Number) x).doubleValue()+ ((Number) 5).doubleValue());
+System.out.println(z );
 scanner.close();
 }
 }

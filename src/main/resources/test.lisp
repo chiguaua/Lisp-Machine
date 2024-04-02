@@ -1,3 +1,8 @@
+
+(setf x 10)
+(setf y "Hello")
+(setf z (+ x 5))
+(print z)
 (defun checkProgn ()
     (progn
       (print "e")
@@ -11,18 +16,12 @@
   )
 )
 
-(let ((input (read)))  (print input))
+(setq x 10)
+(setf x 20)
+(print x)
 
-(@call-java System.out.println("CALL JAVA FROM LISP"))
+(setq lst '(1 2 3 4))
+(setf (car lst) 5)
 
-(loop for i from 1 to 5
-      do (print i)
-        (print (+ 1 i))
-      )
-
-
-(let ((lst (list 1 2 3 4)))
-  (print (car lst))
-  (print (cdr lst))
-  (print (cons 0 lst)))
+(print lst)
 

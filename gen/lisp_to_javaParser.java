@@ -1,4 +1,4 @@
-// Generated from F:/CS NSU Class of 2025/CS NSU 06 (Sixth Semester)/06 Software Designing/Projects/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
+// Generated from C:/Global/prog/Lisp/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -17,8 +17,7 @@ public class lisp_to_javaParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		IDENTIFIER=1, PLUS=2, MINUS=3, MULT=4, DIV=5, OP=6, CP=7, LOGIC=8, ADDITIONAL=9, 
-		SPACE=10, STRING=11, NUMBER=12, WHITESPACE=13, DIGIT=14, LETTER=15, LOWER=16, 
-		UPPER=17;
+		SPACE=10, STRING=11, NUMBER=12, DIGIT=13, LETTER=14, LOWER=15, UPPER=16;
 	public static final int
 		RULE_program = 0, RULE_expression = 1;
 	private static String[] makeRuleNames() {
@@ -37,8 +36,8 @@ public class lisp_to_javaParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, "IDENTIFIER", "PLUS", "MINUS", "MULT", "DIV", "OP", "CP", "LOGIC", 
-			"ADDITIONAL", "SPACE", "STRING", "NUMBER", "WHITESPACE", "DIGIT", "LETTER", 
-			"LOWER", "UPPER"
+			"ADDITIONAL", "SPACE", "STRING", "NUMBER", "DIGIT", "LETTER", "LOWER", 
+			"UPPER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -262,7 +261,7 @@ public class lisp_to_javaParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0011\u0019\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
+		"\u0004\u0001\u0010\u0019\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001"+
 		"\u0001\u0000\u0005\u0000\u0006\b\u0000\n\u0000\f\u0000\t\t\u0000\u0001"+
 		"\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001\u0001"+
 		"\u0001\u0005\u0001\u0012\b\u0001\n\u0001\f\u0001\u0015\t\u0001\u0001\u0001"+

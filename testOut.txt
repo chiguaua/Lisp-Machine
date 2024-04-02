@@ -1,3 +1,4 @@
+
 public class TestOut { public static void main(String[] args) {
 Scanner scanner = new Scanner(System.in);
 Object x = 10;

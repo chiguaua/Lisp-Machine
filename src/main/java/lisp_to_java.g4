@@ -26,8 +26,6 @@ STRING : '"' (LETTER | DIGIT | SPACE)+ '"';
 
 NUMBER : (DIGIT)+ ;
 
-WHITESPACE : [ \r\n\t] + -> channel (HIDDEN);
-
 DIGIT : '0'..'9';
 
 LETTER : LOWER | UPPER ;

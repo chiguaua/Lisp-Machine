@@ -189,6 +189,20 @@ public class Vision {
             case "setq" -> {
                javaLineBuilder.append(visitLetSetq(ctx));
             }
+
+            case "progn" -> {
+                for (int i = 2; i < ctx.getChildCount() - 1; i++) {
+                    ParseTree child = ctx.getChild(i);
+                    if (child instanceof TerminalNode) {
+                        TerminalNode node = (TerminalNode) child;
+                        javaLineBuilder.append(node.getText()).append(";\n ");
+                    } else if (child instanceof lisp_to_javaParser.ExpressionContext && i != ctx.getChildCount() - 2) {
+                        javaLineBuilder.append(visit(child, false) + ";\n");
+                    } else {
+                        javaLineBuilder.append(visit(child, needReturn));
+                    }
+                }
+            }
             default -> {
                 if (needReturn) {
                     javaLineBuilder
@@ -359,7 +373,7 @@ public class Vision {
     }
 
     public String visitArg(lisp_to_javaParser.ExpressionContext ctx) {
-
+System.out.println("CHEEEK1");
         lisp_to_javaParser.ExpressionContext args = (lisp_to_javaParser.ExpressionContext) ctx.getChild(3);
         HashMap<String, String> childName = new HashMap<>();
         for (ParseTree child : args.children) {
@@ -369,6 +383,7 @@ public class Vision {
                 }
             }
         }
+        System.out.println("CHEEEK2");
         checkTypeBase(childName, ctx, "");
         System.out.println(childName);
 
@@ -389,8 +404,9 @@ public class Vision {
                 }
             }
         }
+        System.out.println("CHEEEK3");
         // Remove the trailing comma and space if parameters exist
-        if (argBuilder.length() > 2) {
+        if (args.getChildCount() > 2) {
             argBuilder.setLength(argBuilder.length() - 2);
         }
         argBuilder.append(")");

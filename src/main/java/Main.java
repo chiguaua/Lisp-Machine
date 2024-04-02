@@ -8,7 +8,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-//        String filePath = "src/main/resources/testDefault.lisp";
+//        test
+//        file Fin Fout
+//        code program $$(end program)
         Scanner scanner = new Scanner(System.in);
         String input = scanner.next();
 

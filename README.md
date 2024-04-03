@@ -1,5 +1,4 @@
 Lisp-machine-nsu
-
 Пример использования do Источник - resources/test.list - нижняя строка
                         Результат - test/java/TestOut.java
 

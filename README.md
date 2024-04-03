@@ -3,7 +3,7 @@
 ![image](https://github.com/chiguaua/Lisp-Machine/assets/69720999/df9cd7a2-8e52-483f-8fcf-219e42d0ca6b)
 
 
-<p>This repository contains framework designed for translating lisp code into java . The framework allows users to run Lisp code stored in a specified file and generate corresponding Java code as output.</p>
+<p>This repository contains a framework designed for translating Lisp code into Java. The framework allows users to run Lisp code stored in a specified file and generate corresponding Java code as output. This was developed as a part of the course project for the 6th semester in the discipline of Software Designing by Alexander Lapushinsky(chiguaua) and Rofikul Masud (benmasud)</p>
 
 <h2>Installation</h2>
 

@@ -7,7 +7,7 @@
 
 <h2>Installation</h2>
 
-<p>To use this framework, you will need Java installed on your system. You can download the latest release of the framework from the <a href="https://github.com/chiguaua/Test-Framefork/releases">releases page</a>.</p>
+<p>To use this framework, you will need Java installed on your system. You can download the latest release of the framework from the <a href="https://github.com/chiguaua/Test-Framefork">releases page</a>.</p>
 
 <h2>Usage</h2>
 

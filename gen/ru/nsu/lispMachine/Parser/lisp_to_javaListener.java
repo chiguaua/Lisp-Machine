@@ -1,4 +1,5 @@
-// Generated from C:/Global/prog/Lisp/Lisp-Machine/src/main/java/lisp_to_java.g4 by ANTLR 4.13.1
+// Generated from C:/Global/prog/Lisp/Lisp-Machine/src/main/java/ru/nsu/lispMachine/Parser/lisp_to_java.g4 by ANTLR 4.13.1
+package ru.nsu.lispMachine.Parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**

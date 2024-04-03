@@ -27,6 +27,3 @@
 
 <p>Contributions to this test framework are welcome! If you encounter any issues or have suggestions for improvement, please open an issue or submit a pull request.</p>
 
-<h2>License</h2>
-
-<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>

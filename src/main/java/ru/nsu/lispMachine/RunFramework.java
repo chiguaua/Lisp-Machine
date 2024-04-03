@@ -9,7 +9,6 @@ import ru.nsu.lispMachine.Parser.lisp_to_javaParser;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.logging.Handler;
 
 public class RunFramework {
     static String inpFile;

@@ -6,7 +6,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import ru.nsu.lispMachine.LispHandler;
 import ru.nsu.lispMachine.Parser.lisp_to_javaParser;
 
-import static ru.nsu.lispMachine.Vision.visit;
 import static ru.nsu.lispMachine.Vision.visitExpression;
 
 public class ListHandler implements LispHandler {
